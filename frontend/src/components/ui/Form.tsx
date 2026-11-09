@@ -9,7 +9,7 @@ import type {
 import { cn } from '@/lib/utils'
 
 const control =
-  'block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-100 disabled:bg-slate-50 aria-[invalid=true]:border-red-400 aria-[invalid=true]:ring-red-100'
+  'block w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 shadow-xs transition-[border-color,box-shadow] duration-150 placeholder:text-zinc-400 hover:border-zinc-300 focus:border-zinc-400 focus:ring-4 focus:ring-zinc-900/5 focus:outline-none disabled:bg-zinc-50 aria-[invalid=true]:border-red-300 aria-[invalid=true]:ring-red-500/10'
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(control, 'h-10', className)} {...props} />
@@ -43,16 +43,16 @@ export function Field({
 }) {
   return (
     <div className={cn('space-y-1.5', className)}>
-      <label htmlFor={id} className="block text-sm font-medium text-slate-700">
+      <label htmlFor={id} className="block text-[13px] font-medium text-zinc-800">
         {label}
         {required ? (
           // the asterisk is visual only; screen readers get aria-required on the control
-          <span className="text-red-500" aria-hidden>
+          <span className="text-zinc-400" aria-hidden>
             {' '}
             *
           </span>
         ) : (
-          <span className="font-normal text-slate-400"> (optional)</span>
+          <span className="font-normal text-zinc-400"> (optional)</span>
         )}
       </label>
       {isValidElement(children)
@@ -66,7 +66,7 @@ export function Field({
           {error}
         </p>
       ) : (
-        hint && <p className="text-xs text-slate-500">{hint}</p>
+        hint && <p className="text-xs text-zinc-500">{hint}</p>
       )}
     </div>
   )

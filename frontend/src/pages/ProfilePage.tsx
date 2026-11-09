@@ -90,15 +90,15 @@ export function ProfilePage() {
       )}
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
         <Card className="p-4">
-          <p className="text-xs text-slate-500">Age</p>
+          <p className="text-xs text-zinc-500">Age</p>
           <p className="text-lg font-semibold">{data.age ?? '—'}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-slate-500">BMI</p>
+          <p className="text-xs text-zinc-500">BMI</p>
           <p className="text-lg font-semibold">{data.bmi ?? '—'}</p>
         </Card>
         <Card className="p-4">
-          <p className="text-xs text-slate-500">Assigned doctor</p>
+          <p className="text-xs text-zinc-500">Assigned doctor</p>
           <p className="truncate text-lg font-semibold">
             {data.assigned_doctor?.full_name ?? 'Not yet assigned'}
           </p>
@@ -154,7 +154,7 @@ export function ProfilePage() {
               <Textarea id="medical_history" {...register('medical_history')} />
             </Field>
           </CardBody>
-          <div className="flex items-center justify-end gap-3 border-t border-slate-100 px-5 py-4">
+          <div className="flex items-center justify-end gap-3 border-t border-zinc-100 px-5 py-4">
             {update.isSuccess && !formState.isDirty && (
               <span className="text-sm text-emerald-600">Saved.</span>
             )}

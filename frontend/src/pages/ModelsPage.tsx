@@ -21,7 +21,7 @@ import { useModelCards } from '@/lib/queries'
 import { cn, fmtDate, humanizeSymptom, pct, titleCase } from '@/lib/utils'
 import type { Disease, ModelCard } from '@/types/api'
 
-const SERIES_COLORS = ['#0d8574', '#2563eb', '#f97316', '#94a3b8', '#a855f7']
+const SERIES_COLORS = ['#0d8574', '#2563eb', '#f97316', '#a1a1aa', '#a855f7']
 
 function featureLabel(card: ModelCard, name: string) {
   return card.features?.find((f) => f.name === name)?.label ?? humanizeSymptom(name)
@@ -39,14 +39,14 @@ function ConfusionMatrix({ card }: { card: ModelCard }) {
   ]
   return (
     <div>
-      <div className="mb-1 grid grid-cols-[auto_1fr_1fr] gap-2 text-center text-xs text-slate-500">
+      <div className="mb-1 grid grid-cols-[auto_1fr_1fr] gap-2 text-center text-xs text-zinc-500">
         <span />
         <span>Predicted: {card.class_names[0]}</span>
         <span>Predicted: {card.class_names[1]}</span>
       </div>
       {[0, 1].map((row) => (
         <div key={row} className="mb-2 grid grid-cols-[auto_1fr_1fr] items-center gap-2">
-          <span className="w-24 text-right text-xs text-slate-500">
+          <span className="w-24 text-right text-xs text-zinc-500">
             Actual: {card.class_names[row]}
           </span>
           {cells.slice(row * 2, row * 2 + 2).map((c) => (
@@ -63,7 +63,7 @@ function ConfusionMatrix({ card }: { card: ModelCard }) {
           ))}
         </div>
       ))}
-      <p className="mt-2 text-xs text-slate-500">
+      <p className="mt-2 text-xs text-zinc-500">
         Hold-out test set of {card.dataset.split.test} patients never seen during training or
         tuning.
       </p>
@@ -82,7 +82,7 @@ function RocChart({ card }: { card: ModelCard }) {
   return (
     <ResponsiveContainer width="100%" height={280}>
       <LineChart margin={{ left: -10, right: 10, top: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
         <XAxis
           type="number"
           dataKey="fpr"
@@ -107,9 +107,10 @@ function RocChart({ card }: { card: ModelCard }) {
             { fpr: 1, tpr: 1 },
           ]}
           dataKey="tpr"
-          stroke="#cbd5e1"
+          stroke="#d4d4d8"
           strokeDasharray="4 4"
           dot={false}
+          isAnimationActive={false}
           name="Chance"
           legendType="none"
         />
@@ -122,6 +123,7 @@ function RocChart({ card }: { card: ModelCard }) {
             stroke={SERIES_COLORS[i % SERIES_COLORS.length]}
             strokeWidth={s.key === 'decision_tree' ? 2.5 : 1.5}
             dot={false}
+            isAnimationActive={false}
             type="stepAfter"
           />
         ))}
@@ -138,7 +140,7 @@ function ImportanceChart({ card }: { card: ModelCard }) {
   return (
     <ResponsiveContainer width="100%" height={Math.max(180, data.length * 32)}>
       <BarChart data={data} layout="vertical" margin={{ left: 10, right: 20 }}>
-        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e2e8f0" />
+        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e4e4e7" />
         <XAxis type="number" tick={{ fontSize: 11 }} tickFormatter={(v: number) => pct(v)} />
         <YAxis type="category" dataKey="name" width={190} tick={{ fontSize: 11 }} />
         <Tooltip formatter={(v) => [pct(Number(v), 1), 'Importance']} />
@@ -179,7 +181,7 @@ function ComparisonTable({ card }: { card: ModelCard }) {
                 {c.cv?.[m] ? (
                   <>
                     {c.cv[m].mean.toFixed(3)}
-                    <span className="text-xs text-slate-400"> ± {c.cv[m].std.toFixed(3)}</span>
+                    <span className="text-xs text-zinc-400"> ± {c.cv[m].std.toFixed(3)}</span>
                   </>
                 ) : (
                   '—'
@@ -203,7 +205,7 @@ function RobustnessChart({ card }: { card: ModelCard }) {
   return (
     <ResponsiveContainer width="100%" height={260}>
       <LineChart data={data} margin={{ left: -10, right: 10, top: 5 }}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
         <XAxis dataKey="hidden" tick={{ fontSize: 11 }} />
         <YAxis domain={[0, 1]} tickFormatter={(v: number) => pct(v)} tick={{ fontSize: 11 }} />
         <Tooltip formatter={(v) => pct(Number(v), 1)} />
@@ -241,9 +243,9 @@ function ModelDetail({ card }: { card: ModelCard }) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-2 text-sm text-slate-600">
+      <div className="flex flex-wrap items-center gap-2 text-sm text-zinc-600">
         <Badge className="bg-brand-50 text-brand-700">{card.algorithm}</Badge>
-        <Badge className="bg-slate-100 text-slate-600">v{card.version}</Badge>
+        <Badge className="bg-zinc-100 text-zinc-600">v{card.version}</Badge>
         <span>
           Trained {fmtDate(card.trained_at)} ·{' '}
           {card.tree.n_trees > 1 ? `${card.tree.n_trees} trees, ` : ''}
@@ -333,8 +335,8 @@ function ModelDetail({ card }: { card: ModelCard }) {
             }
           />
           <CardBody className="space-y-3 text-sm">
-            <p className="text-slate-700">{card.dataset.source}</p>
-            <p className="text-slate-500">
+            <p className="text-zinc-700">{card.dataset.source}</p>
+            <p className="text-zinc-500">
               {card.dataset.raw_rows.toLocaleString()} raw rows →{' '}
               {card.dataset.rows.toLocaleString()} after cleaning · {card.dataset.split.train}/
               {card.dataset.split.test} stratified split
@@ -343,7 +345,7 @@ function ModelDetail({ card }: { card: ModelCard }) {
               <ul className="space-y-1">
                 {Object.entries(card.dataset.class_balance).map(([label, n]) => (
                   <li key={label} className="flex justify-between">
-                    <span className="text-slate-500">{label}</span>
+                    <span className="text-zinc-500">{label}</span>
                     <span className="font-medium">{n}</span>
                   </li>
                 ))}
@@ -360,18 +362,18 @@ function ModelDetail({ card }: { card: ModelCard }) {
             }
           />
           <CardBody className="space-y-3 text-sm">
-            <ul className="list-disc space-y-1 pl-4 text-slate-600">
+            <ul className="list-disc space-y-1 pl-4 text-zinc-600">
               {card.dataset.cleaning.map((step) => (
                 <li key={step}>{step}</li>
               ))}
             </ul>
-            <p className="text-slate-500">
+            <p className="text-zinc-500">
               {card.model_selection.candidates_evaluated} configurations searched (
               {card.model_selection.search}, scoring:{' '}
               {card.model_selection.scoring.replace('_', ' ')}). Selection rule:{' '}
               {card.model_selection.refit_rule}.
             </p>
-            <p className="font-mono text-xs break-words text-slate-500">
+            <p className="font-mono text-xs break-words text-zinc-500">
               {Object.entries(card.hyperparameters)
                 .map(([k, v]) => `${k}=${v === null ? 'None' : String(v)}`)
                 .join(', ')}
@@ -387,12 +389,12 @@ function ModelDetail({ card }: { card: ModelCard }) {
             }
           />
           <CardBody className="space-y-3 text-sm">
-            <ul className="list-disc space-y-1 pl-4 text-slate-600">
+            <ul className="list-disc space-y-1 pl-4 text-zinc-600">
               {card.limitations.map((l) => (
                 <li key={l}>{l}</li>
               ))}
             </ul>
-            <p className="flex gap-2 text-slate-500">
+            <p className="flex gap-2 text-zinc-500">
               <Info className="mt-0.5 size-4 shrink-0" /> {card.intended_use}
             </p>
           </CardBody>

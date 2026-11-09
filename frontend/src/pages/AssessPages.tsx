@@ -47,21 +47,21 @@ export function AssessIndexPage() {
             <Link
               key={m.disease}
               to={`/assess/${m.disease}${suffix}`}
-              className="group rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:border-brand-500 hover:shadow-md"
+              className="group rounded-xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:border-brand-500 hover:shadow-md"
             >
               <div className="mb-4 flex items-center justify-between">
                 <div className="rounded-lg bg-brand-50 p-3 text-brand-600">
                   <Icon className="size-6" aria-hidden />
                 </div>
-                <Badge className="bg-slate-100 text-slate-600">
+                <Badge className="bg-zinc-100 text-zinc-600">
                   {m.algorithm.replace('Classifier', '')} · v{m.version}
                 </Badge>
               </div>
-              <h2 className="text-lg font-semibold text-slate-900 group-hover:text-brand-700">
+              <h2 className="text-lg font-semibold text-zinc-900 group-hover:text-brand-700">
                 {m.title}
               </h2>
-              <p className="mt-1 text-sm text-slate-600">{m.description}</p>
-              <p className="mt-3 text-xs text-slate-500">
+              <p className="mt-1 text-sm text-zinc-600">{m.description}</p>
+              <p className="mt-3 text-xs text-zinc-500">
                 {m.disease === 'symptom'
                   ? `${m.symptoms?.length ?? 0} symptoms · test accuracy ${pct(m.test_metrics.accuracy)}`
                   : `${m.features.length} inputs · test accuracy ${pct(m.test_metrics.accuracy)}`}
@@ -115,7 +115,7 @@ function ClinicalForm({
           <div className="relative">
             <Input type="number" step="any" inputMode="decimal" className="pr-16" {...props} />
             {f.unit && (
-              <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-slate-400">
+              <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-zinc-400">
                 {f.unit}
               </span>
             )}
@@ -156,7 +156,7 @@ function ClinicalForm({
         <CardBody className="grid gap-5 sm:grid-cols-2">
           {module.features.map(renderControl)}
         </CardBody>
-        <div className="flex justify-end gap-3 border-t border-slate-100 px-5 py-4">
+        <div className="flex justify-end gap-3 border-t border-zinc-100 px-5 py-4">
           <Button
             type="button"
             variant="secondary"
@@ -203,9 +203,9 @@ function SymptomPicker({
         description="Select every symptom you have (at least two). Search to find them quickly."
       />
       <CardBody className="space-y-4">
-        <div className="flex min-h-12 flex-wrap gap-2 rounded-lg border border-dashed border-slate-300 p-2">
+        <div className="flex min-h-12 flex-wrap gap-2 rounded-lg border border-dashed border-zinc-300 p-2">
           {selected.length === 0 && (
-            <span className="px-1 py-1 text-sm text-slate-400">No symptoms selected yet</span>
+            <span className="px-1 py-1 text-sm text-zinc-400">No symptoms selected yet</span>
           )}
           {selected.map((name) => {
             const s = byName.get(name)!
@@ -234,7 +234,7 @@ function SymptomPicker({
         )}
 
         <div className="relative">
-          <Search className="pointer-events-none absolute top-2.5 left-3 size-5 text-slate-400" />
+          <Search className="pointer-events-none absolute top-2.5 left-3 size-5 text-zinc-400" />
           <Input
             placeholder="Search symptoms, e.g. fever, cough, rash"
             value={query}
@@ -243,12 +243,12 @@ function SymptomPicker({
             aria-label="Search symptoms"
           />
         </div>
-        <div className="grid max-h-80 gap-1 overflow-y-auto rounded-lg border border-slate-200 p-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid max-h-80 gap-1 overflow-y-auto rounded-lg border border-zinc-200 p-2 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((s) => (
             <label
               key={s.name}
               className={cn(
-                'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-slate-50',
+                'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-zinc-50',
                 selected.includes(s.name) && 'bg-brand-50',
               )}
             >
@@ -258,14 +258,14 @@ function SymptomPicker({
                 onChange={() => toggle(s.name)}
                 className="accent-brand-600"
               />
-              <span className="text-slate-700">{s.label}</span>
+              <span className="text-zinc-700">{s.label}</span>
               {s.red_flag && (
                 <TriangleAlert className="size-3.5 text-red-500" aria-label="red flag" />
               )}
             </label>
           ))}
           {filtered.length === 0 && (
-            <p className="col-span-full p-4 text-center text-sm text-slate-500">
+            <p className="col-span-full p-4 text-center text-sm text-zinc-500">
               No symptom matches “{query}”.
             </p>
           )}
@@ -273,8 +273,8 @@ function SymptomPicker({
         {touched && tooFew && <p className="text-sm text-red-600">Select at least two symptoms.</p>}
         {serverError && <p className="text-sm text-red-600">{serverError}</p>}
       </CardBody>
-      <div className="flex items-center justify-between border-t border-slate-100 px-5 py-4">
-        <span className="text-sm text-slate-500">{selected.length} selected</span>
+      <div className="flex items-center justify-between border-t border-zinc-100 px-5 py-4">
+        <span className="text-sm text-zinc-500">{selected.length} selected</span>
         <Button
           loading={submitting}
           onClick={() => {
@@ -393,7 +393,7 @@ export function AssessFormPage() {
               serverErrors={serverErrors}
             />
           )}
-          <p className="mt-4 text-xs text-slate-500">
+          <p className="mt-4 text-xs text-zinc-500">
             Model: {module.algorithm} v{module.version}. {module.limitations[0]}
           </p>
         </>

@@ -47,12 +47,12 @@ function ReviewPanel({ prediction, canReview }: { prediction: Prediction; canRev
         {review && !editing && (
           <div className="space-y-2 text-sm">
             <p>
-              <span className="font-medium text-slate-900">{review.doctor?.full_name}</span>{' '}
-              <span className="text-slate-500">· {fmtDate(review.created_at)}</span>
+              <span className="font-medium text-zinc-900">{review.doctor?.full_name}</span>{' '}
+              <span className="text-zinc-500">· {fmtDate(review.created_at)}</span>
             </p>
-            <p className="font-medium text-slate-800">{VERDICT_LABEL[review.verdict]}</p>
+            <p className="font-medium text-zinc-800">{VERDICT_LABEL[review.verdict]}</p>
             {review.notes && (
-              <blockquote className="border-l-2 border-brand-200 pl-3 text-slate-600 italic">
+              <blockquote className="border-l-2 border-brand-200 pl-3 text-zinc-600 italic">
                 {review.notes}
               </blockquote>
             )}
@@ -64,7 +64,7 @@ function ReviewPanel({ prediction, canReview }: { prediction: Prediction; canRev
           </div>
         )}
         {!review && !canReview && (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-zinc-500">
             Your doctor has not reviewed this result yet. Their verdict and notes will appear here.
           </p>
         )}
@@ -130,7 +130,7 @@ function InputsCard({ prediction }: { prediction: Prediction }) {
         <CardHeader title="Reported symptoms" />
         <CardBody className="flex flex-wrap gap-2">
           {symptoms.map((s) => (
-            <Badge key={s} className="bg-slate-100 text-slate-700">
+            <Badge key={s} className="bg-zinc-100 text-zinc-700">
               {humanizeSymptom(s)}
             </Badge>
           ))}
@@ -142,7 +142,7 @@ function InputsCard({ prediction }: { prediction: Prediction }) {
     <Card>
       <CardHeader title="Information provided" />
       <CardBody>
-        <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2">
+        <dl className="grid text-sm">
           {module?.features.map((f) => {
             const raw = prediction.input_data[f.name] as number | null
             const shown =
@@ -154,12 +154,10 @@ function InputsCard({ prediction }: { prediction: Prediction }) {
             return (
               <div
                 key={f.name}
-                className="flex justify-between gap-4 border-b border-slate-100 py-1.5"
+                className="flex justify-between gap-4 border-b border-zinc-100 py-1.5"
               >
-                <dt className="text-slate-500">{f.label}</dt>
-                <dd
-                  className={raw === null ? 'text-slate-400 italic' : 'font-medium text-slate-800'}
-                >
+                <dt className="text-zinc-500">{f.label}</dt>
+                <dd className={raw === null ? 'text-zinc-400 italic' : 'font-medium text-zinc-800'}>
                   {shown}
                 </dd>
               </div>
@@ -188,14 +186,14 @@ export function PredictionDetailPage() {
         <div>
           <Link
             to={user?.role === 'patient' ? '/history' : `/patients/${p.patient_id}`}
-            className="mb-2 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800"
+            className="mb-2 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-800"
           >
             <ArrowLeft className="size-4" /> Back
           </Link>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">
             {DISEASE_LABEL[p.disease]} assessment
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-zinc-500">
             {p.patient_name} · {fmtDate(p.created_at, true)}
             {p.created_by && ` · requested by ${p.created_by}`}
           </p>
@@ -229,26 +227,26 @@ export function PredictionDetailPage() {
       <div className="grid gap-6 lg:grid-cols-5">
         <Card className="lg:col-span-2">
           <CardBody className="flex flex-col items-center text-center">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-zinc-500">
               {isSymptom ? 'Most likely condition' : 'Result'}
             </p>
-            <p className="mb-4 text-2xl font-bold text-slate-900">{p.predicted_label}</p>
+            <p className="mb-4 text-2xl font-bold text-zinc-900">{p.predicted_label}</p>
             <RiskGauge probability={p.probability} risk={p.risk_level} />
             {isSymptom && p.top_conditions && p.top_conditions.length > 1 && (
               <div className="mt-6 w-full text-left">
-                <p className="mb-2 text-sm font-medium text-slate-700">Other possibilities</p>
+                <p className="mb-2 text-sm font-medium text-zinc-700">Other possibilities</p>
                 <ul className="space-y-1.5 text-sm">
                   {p.top_conditions.slice(1).map((c) => (
                     <li key={c.condition} className="flex justify-between">
-                      <span className="text-slate-600">{c.condition}</span>
-                      <span className="tabular-nums text-slate-500">{pct(c.probability)}</span>
+                      <span className="text-zinc-600">{c.condition}</span>
+                      <span className="tabular-nums text-zinc-500">{pct(c.probability)}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             )}
             {p.model && (
-              <p className="mt-6 text-xs text-slate-400">
+              <p className="mt-6 text-xs text-zinc-400">
                 {p.model.algorithm} v{p.model.version}
               </p>
             )}
@@ -267,7 +265,7 @@ export function PredictionDetailPage() {
             {p.explanation ? (
               <ExplanationChart explanation={p.explanation} />
             ) : (
-              <p className="text-sm text-slate-500">No explanation available.</p>
+              <p className="text-sm text-zinc-500">No explanation available.</p>
             )}
           </CardBody>
         </Card>
@@ -284,7 +282,7 @@ export function PredictionDetailPage() {
             description="General guidance, not medical advice."
           />
           <CardBody>
-            <ul className="space-y-2 text-sm text-slate-700">
+            <ul className="space-y-2 text-sm text-zinc-700">
               {p.guidance.map((g) => (
                 <li key={g} className="flex gap-2">
                   <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-brand-500" />

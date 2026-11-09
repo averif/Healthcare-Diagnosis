@@ -51,7 +51,7 @@ export function AssistantChat({ predictionId }: { predictionId: number }) {
         description="Questions about this result, answered in plain language."
         action={
           status.data && (
-            <Badge className="bg-slate-100 text-slate-600">
+            <Badge className="bg-zinc-100 text-zinc-600">
               {PROVIDER_LABEL[status.data.provider] ?? 'Offline mode'}
             </Badge>
           )
@@ -59,12 +59,12 @@ export function AssistantChat({ predictionId }: { predictionId: number }) {
       />
       <div
         ref={scroller}
-        className="mx-5 mt-4 h-80 space-y-3 overflow-y-auto rounded-lg bg-slate-50 p-3"
+        className="mx-5 mt-4 h-80 space-y-3 overflow-y-auto rounded-lg bg-zinc-50 p-3"
         aria-live="polite"
       >
         {history.isPending && <Spinner />}
         {messages.length === 0 && !pending && !history.isPending && (
-          <p className="p-2 text-sm text-slate-500">
+          <p className="p-2 text-sm text-zinc-500">
             Hi! I can explain what this result means, why the model reached it and what general next
             steps are. I can't diagnose or advise on medicines.
           </p>
@@ -79,7 +79,7 @@ export function AssistantChat({ predictionId }: { predictionId: number }) {
                 'max-w-[85%] rounded-2xl px-3.5 py-2 text-sm whitespace-pre-line',
                 m.role === 'user'
                   ? 'rounded-br-sm bg-brand-600 text-white'
-                  : 'rounded-bl-sm border border-slate-200 bg-white text-slate-800',
+                  : 'rounded-bl-sm border border-zinc-200 bg-white text-zinc-800',
               )}
             >
               {m.content}
@@ -93,7 +93,7 @@ export function AssistantChat({ predictionId }: { predictionId: number }) {
                 {pending}
               </div>
             </div>
-            <div className="flex items-center gap-2 text-sm text-slate-500">
+            <div className="flex items-center gap-2 text-sm text-zinc-500">
               <Spinner className="size-4" /> Thinking…
             </div>
           </>
@@ -110,7 +110,7 @@ export function AssistantChat({ predictionId }: { predictionId: number }) {
           <button
             key={s}
             onClick={() => ask(s)}
-            className="cursor-pointer rounded-full border border-slate-200 px-3 py-1 text-xs text-slate-600 hover:border-brand-500 hover:text-brand-700"
+            className="cursor-pointer rounded-full border border-zinc-200 px-3 py-1 text-xs text-zinc-600 hover:border-brand-500 hover:text-brand-700"
           >
             {s}
           </button>
@@ -129,7 +129,7 @@ export function AssistantChat({ predictionId }: { predictionId: number }) {
           maxLength={1000}
           placeholder="Type your question…"
           aria-label="Your question"
-          className="h-10 flex-1 rounded-lg border border-slate-300 px-3 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none"
+          className="h-10 flex-1 rounded-lg border border-zinc-300 px-3 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none"
         />
         <Button
           type="submit"

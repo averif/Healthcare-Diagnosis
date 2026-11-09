@@ -5,7 +5,7 @@ test.describe('Authentication', () => {
   test('a new patient can register and is guided to complete their profile', async ({ page }) => {
     const email = `e2e.${Date.now()}@mediassist.test`
     await page.goto('/')
-    await page.getByRole('link', { name: 'Create a free account' }).click()
+    await page.getByRole('link', { name: /Start a free assessment/ }).click()
 
     // client-side validation
     await page.getByRole('button', { name: 'Create account' }).click()

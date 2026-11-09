@@ -106,12 +106,12 @@ function CreateUserModal({ open, onClose }: { open: boolean; onClose: () => void
 function UserRow({ u, isSelf }: { u: User; isSelf: boolean }) {
   const update = useUpdateUser()
   return (
-    <tr className="hover:bg-slate-50">
+    <tr className="hover:bg-zinc-50">
       <Td>
-        <p className="font-medium text-slate-800">
-          {u.full_name} {isSelf && <span className="text-xs text-slate-400">(you)</span>}
+        <p className="font-medium text-zinc-800">
+          {u.full_name} {isSelf && <span className="text-xs text-zinc-400">(you)</span>}
         </p>
-        <p className="text-xs text-slate-500">{u.email}</p>
+        <p className="text-xs text-zinc-500">{u.email}</p>
       </Td>
       <Td>
         {isSelf ? (
@@ -136,10 +136,10 @@ function UserRow({ u, isSelf }: { u: User; isSelf: boolean }) {
         {u.is_active ? (
           <Badge className="bg-emerald-50 text-emerald-700">Active</Badge>
         ) : (
-          <Badge className="bg-slate-100 text-slate-500">Deactivated</Badge>
+          <Badge className="bg-zinc-100 text-zinc-500">Deactivated</Badge>
         )}
       </Td>
-      <Td className="text-slate-500">{fmtDate(u.last_login_at, true)}</Td>
+      <Td className="text-zinc-500">{fmtDate(u.last_login_at, true)}</Td>
       <Td className="text-right">
         {!isSelf && (
           <Button
@@ -176,9 +176,9 @@ export function UsersPage() {
         }
       />
       <Card>
-        <div className="flex flex-wrap gap-3 border-b border-slate-100 p-4">
+        <div className="flex flex-wrap gap-3 border-b border-zinc-100 p-4">
           <div className="relative w-full max-w-xs">
-            <Search className="pointer-events-none absolute top-2.5 left-3 size-5 text-slate-400" />
+            <Search className="pointer-events-none absolute top-2.5 left-3 size-5 text-zinc-400" />
             <Input
               placeholder="Search name or email"
               aria-label="Search users"
@@ -265,7 +265,7 @@ export function AuditLogPage() {
         description="Every sign-in, record access, prediction, review, report and admin change."
       />
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-zinc-100 p-4">
           <Select
             aria-label="Filter by action"
             className="w-auto"
@@ -304,24 +304,24 @@ export function AuditLogPage() {
               <tbody>
                 {data.items.map((log) => (
                   <tr key={log.id}>
-                    <Td className="whitespace-nowrap text-slate-500">
+                    <Td className="whitespace-nowrap text-zinc-500">
                       {fmtDate(log.created_at, true)}
                     </Td>
-                    <Td>{log.user_email ?? <span className="text-slate-400">anonymous</span>}</Td>
+                    <Td>{log.user_email ?? <span className="text-zinc-400">anonymous</span>}</Td>
                     <Td>
                       <code
-                        className={`rounded px-1.5 py-0.5 text-xs ${log.action.includes('failed') || log.action.includes('emergency') ? 'bg-red-50 text-red-700' : 'bg-slate-100 text-slate-700'}`}
+                        className={`rounded px-1.5 py-0.5 text-xs ${log.action.includes('failed') || log.action.includes('emergency') ? 'bg-red-50 text-red-700' : 'bg-zinc-100 text-zinc-700'}`}
                       >
                         {log.action}
                       </code>
                     </Td>
-                    <Td className="text-slate-600">
+                    <Td className="text-zinc-600">
                       {log.entity_type ? `${log.entity_type} #${log.entity_id}` : '—'}
                     </Td>
-                    <Td className="max-w-xs truncate text-xs text-slate-500">
+                    <Td className="max-w-xs truncate text-xs text-zinc-500">
                       {log.details ? JSON.stringify(log.details) : '—'}
                     </Td>
-                    <Td className="text-xs text-slate-500">{log.ip_address}</Td>
+                    <Td className="text-xs text-zinc-500">{log.ip_address}</Td>
                   </tr>
                 ))}
               </tbody>

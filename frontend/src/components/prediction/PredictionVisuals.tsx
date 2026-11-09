@@ -16,7 +16,7 @@ export function RiskGauge({ probability, risk }: { probability: number; risk: Ri
         <path
           d="M 20 100 A 80 80 0 0 1 180 100"
           fill="none"
-          stroke="#e2e8f0"
+          stroke="#e4e4e7"
           strokeWidth="16"
           strokeLinecap="round"
         />
@@ -29,10 +29,10 @@ export function RiskGauge({ probability, risk }: { probability: number; risk: Ri
           strokeDasharray={`${filled} ${circumference}`}
           style={{ transition: 'stroke-dasharray 0.8s ease' }}
         />
-        <text x="100" y="88" textAnchor="middle" className="fill-slate-900 text-[32px] font-bold">
+        <text x="100" y="88" textAnchor="middle" className="fill-zinc-900 text-[32px] font-bold">
           {pct(probability)}
         </text>
-        <text x="100" y="108" textAnchor="middle" className="fill-slate-500 text-[11px]">
+        <text x="100" y="108" textAnchor="middle" className="fill-zinc-500 text-[11px]">
           estimated probability
         </text>
       </svg>
@@ -62,7 +62,7 @@ export function ExplanationChart({
   const max = Math.max(0.05, ...reasons.map((r) => Math.abs(r.contribution)))
   return (
     <div className="space-y-3">
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-zinc-500">
         Starting from a baseline of {pct(explanation.base_rate)}, each factor raised (red) or
         lowered (green) the estimate. Together they add up exactly to the final{' '}
         {pct(explanation.probability)}.
@@ -75,7 +75,7 @@ export function ExplanationChart({
           return (
             <li key={reason.feature}>
               <div className="mb-1 flex items-start justify-between gap-3 text-sm">
-                <span className="text-slate-700">
+                <span className="text-zinc-700">
                   {reason.text}
                   {reason.imputed && (
                     <span className="ml-1 text-xs text-amber-700">(estimated)</span>
@@ -88,8 +88,8 @@ export function ExplanationChart({
                   {(Math.abs(reason.contribution) * 100).toFixed(1)} pts
                 </span>
               </div>
-              <div className="relative h-2 rounded-full bg-slate-100" aria-hidden>
-                <div className="absolute top-0 left-1/2 h-2 w-px bg-slate-300" />
+              <div className="relative h-2 rounded-full bg-zinc-100" aria-hidden>
+                <div className="absolute top-0 left-1/2 h-2 w-px bg-zinc-300" />
                 <div
                   className={`absolute top-0 h-2 rounded-full ${up ? 'left-1/2 bg-red-500' : 'right-1/2 bg-emerald-500'}`}
                   style={{ width }}
@@ -100,7 +100,7 @@ export function ExplanationChart({
         })}
       </ul>
       {reasons.length === 0 && (
-        <p className="text-sm text-slate-500">No single factor moved this estimate noticeably.</p>
+        <p className="text-sm text-zinc-500">No single factor moved this estimate noticeably.</p>
       )}
       <p className="sr-only">Factors are listed in order of their effect on the {subject}.</p>
     </div>
@@ -131,13 +131,13 @@ export function PredictionTable({
       </thead>
       <tbody>
         {predictions.map((p) => (
-          <tr key={p.id} className="hover:bg-slate-50">
-            <Td className="whitespace-nowrap text-slate-500">{fmtDate(p.created_at)}</Td>
-            {showPatient && <Td className="font-medium text-slate-800">{p.patient_name}</Td>}
+          <tr key={p.id} className="hover:bg-zinc-50">
+            <Td className="whitespace-nowrap text-zinc-500">{fmtDate(p.created_at)}</Td>
+            {showPatient && <Td className="font-medium text-zinc-800">{p.patient_name}</Td>}
             <Td>{DISEASE_LABEL[p.disease]}</Td>
             <Td>
-              <span className="font-medium text-slate-800">{p.predicted_label}</span>{' '}
-              <span className="text-slate-500">({pct(p.probability)})</span>
+              <span className="font-medium text-zinc-800">{p.predicted_label}</span>{' '}
+              <span className="text-zinc-500">({pct(p.probability)})</span>
             </Td>
             <Td>
               <RiskBadge risk={p.risk_level} />

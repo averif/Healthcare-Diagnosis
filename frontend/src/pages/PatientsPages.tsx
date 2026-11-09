@@ -59,9 +59,9 @@ export function PatientsPage() {
         }
       />
       <Card>
-        <div className="border-b border-slate-100 p-4">
+        <div className="border-b border-zinc-100 p-4">
           <div className="relative max-w-sm">
-            <Search className="pointer-events-none absolute top-2.5 left-3 size-5 text-slate-400" />
+            <Search className="pointer-events-none absolute top-2.5 left-3 size-5 text-zinc-400" />
             <Input
               placeholder="Search by name or email"
               aria-label="Search patients"
@@ -96,12 +96,12 @@ export function PatientsPage() {
               </thead>
               <tbody>
                 {data.items.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-50">
+                  <tr key={p.id} className="hover:bg-zinc-50">
                     <Td>
-                      <p className="font-medium text-slate-800">{p.full_name}</p>
-                      <p className="text-xs text-slate-500">{p.email}</p>
+                      <p className="font-medium text-zinc-800">{p.full_name}</p>
+                      <p className="text-xs text-zinc-500">{p.email}</p>
                     </Td>
-                    <Td className="text-slate-600">
+                    <Td className="text-zinc-600">
                       {p.age ?? '—'} {p.sex && `· ${titleCase(p.sex)}`}
                     </Td>
                     <Td>{p.prediction_count}</Td>
@@ -158,7 +158,7 @@ export function PatientDetailPage() {
       <div>
         <Link
           to="/patients"
-          className="mb-2 inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800"
+          className="mb-2 inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-800"
         >
           <ArrowLeft className="size-4" /> All patients
         </Link>
@@ -181,15 +181,15 @@ export function PatientDetailPage() {
             <dl className="space-y-2 text-sm">
               {facts.map(([label, value]) => (
                 <div key={label} className="flex justify-between gap-4">
-                  <dt className="text-slate-500">{label}</dt>
-                  <dd className="font-medium text-slate-800">{value}</dd>
+                  <dt className="text-zinc-500">{label}</dt>
+                  <dd className="font-medium text-zinc-800">{value}</dd>
                 </div>
               ))}
             </dl>
             {p.medical_history && (
-              <div className="mt-4 border-t border-slate-100 pt-4">
-                <p className="mb-1 text-xs font-medium text-slate-500 uppercase">Medical history</p>
-                <p className="text-sm whitespace-pre-line text-slate-700">{p.medical_history}</p>
+              <div className="mt-4 border-t border-zinc-100 pt-4">
+                <p className="mb-1 text-xs font-medium text-zinc-500 uppercase">Medical history</p>
+                <p className="text-sm whitespace-pre-line text-zinc-700">{p.medical_history}</p>
               </div>
             )}
           </CardBody>
@@ -198,7 +198,7 @@ export function PatientDetailPage() {
           <CardHeader
             title="Assessment history"
             action={
-              <Badge className="bg-slate-100 text-slate-600">
+              <Badge className="bg-zinc-100 text-zinc-600">
                 {predictions.data?.total ?? 0} total
               </Badge>
             }

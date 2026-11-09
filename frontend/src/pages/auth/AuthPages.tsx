@@ -1,16 +1,22 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { HeartPulse } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { z } from 'zod'
 import { useAuth } from '@/auth/useAuth'
 import { Disclaimer } from '@/components/layout/Disclaimer'
+import { Logo } from '@/components/layout/Logo'
 import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 import { Alert } from '@/components/ui/Feedback'
 import { Field, Input } from '@/components/ui/Form'
 import { errorMessage, fieldErrors } from '@/lib/api'
+
+const PANEL_POINTS = [
+  'Exact, per-factor explanations for every result',
+  'Reviewed by your assigned doctor',
+  'Downloadable PDF reports and full history',
+]
 
 function AuthShell({
   title,
@@ -22,18 +28,78 @@ function AuthShell({
   children: ReactNode
 }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-brand-50 via-white to-slate-50 px-4 py-10">
-      <Link to="/" className="mb-6 flex items-center gap-2 text-lg font-semibold text-brand-700">
-        <HeartPulse className="size-7" aria-hidden /> MediAssist CDSS
-      </Link>
-      <Card className="w-full max-w-md p-6 sm:p-8">
-        <h1 className="text-xl font-semibold text-slate-900">{title}</h1>
-        <p className="mt-1 mb-6 text-sm text-slate-500">{subtitle}</p>
-        {children}
-      </Card>
-      <div className="mt-6 w-full max-w-md">
-        <Disclaimer />
+    <div className="grid min-h-screen bg-white lg:grid-cols-[1fr_1.05fr]">
+      <div className="flex flex-col px-6 py-8 sm:px-12">
+        <Link to="/" className="w-fit">
+          <Logo />
+        </Link>
+        <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">
+          <h1 className="animate-fade-up text-[28px] font-semibold tracking-[-0.03em] text-zinc-950">
+            {title}
+          </h1>
+          <p className="mt-2 mb-8 animate-fade-up text-[15px] text-zinc-500">{subtitle}</p>
+          <div className="animate-fade-up [animation-delay:60ms]">{children}</div>
+        </div>
+        <div className="mx-auto w-full max-w-sm">
+          <Disclaimer />
+        </div>
       </div>
+
+      <aside className="relative hidden overflow-hidden bg-zinc-950 lg:flex lg:flex-col lg:justify-between lg:p-12">
+        <div
+          className="bg-grid pointer-events-none absolute inset-0 opacity-[0.07] invert"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute -top-24 -right-24 size-[420px] rounded-full bg-brand-500/25 blur-3xl"
+          aria-hidden
+        />
+        <p className="relative text-xs font-medium tracking-wider text-brand-300 uppercase">
+          Clinical decision support
+        </p>
+        <div className="relative">
+          <h2 className="max-w-md text-4xl leading-[1.1] font-semibold tracking-[-0.03em] text-white">
+            Every result comes{' '}
+            <span className="font-display font-normal text-brand-300 italic">
+              with its reasons.
+            </span>
+          </h2>
+          <div className="mt-10 max-w-md rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur">
+            <div className="flex items-baseline justify-between">
+              <p className="text-sm text-zinc-400">Heart disease</p>
+              <p className="font-mono text-2xl text-white">98%</p>
+            </div>
+            <ul className="mt-4 space-y-3 text-[13px]">
+              {[
+                ['Thallium stress test is not normal', 29],
+                ['Chest pain type is asymptomatic', 11],
+                ['ST depression is 2.5 mm, above 0.45', 8],
+              ].map(([text, pts]) => (
+                <li key={text as string}>
+                  <div className="flex justify-between text-zinc-300">
+                    <span>{text}</span>
+                    <span className="font-mono text-red-300">+{pts}</span>
+                  </div>
+                  <div className="mt-1.5 h-1 rounded-full bg-white/10">
+                    <div
+                      className="h-1 rounded-full bg-gradient-to-r from-red-400 to-red-500"
+                      style={{ width: `${(Number(pts) / 30) * 100}%` }}
+                    />
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <ul className="relative space-y-2.5 text-sm text-zinc-400">
+          {PANEL_POINTS.map((point) => (
+            <li key={point} className="flex items-center gap-2.5">
+              <Check className="size-4 text-brand-400" aria-hidden />
+              {point}
+            </li>
+          ))}
+        </ul>
+      </aside>
     </div>
   )
 }
@@ -104,10 +170,8 @@ export function LoginPage() {
       </form>
 
       {import.meta.env.DEV && (
-        <div className="mt-6 border-t border-slate-200 pt-4">
-          <p className="mb-2 text-xs font-medium text-slate-500">
-            Demo accounts (development only)
-          </p>
+        <div className="mt-6 border-t border-zinc-200 pt-4">
+          <p className="mb-2 text-xs font-medium text-zinc-500">Demo accounts (development only)</p>
           <div className="flex flex-wrap gap-2">
             {DEMO_ACCOUNTS.map((account) => (
               <Button
@@ -127,7 +191,7 @@ export function LoginPage() {
         </div>
       )}
 
-      <p className="mt-6 text-center text-sm text-slate-500">
+      <p className="mt-6 text-center text-sm text-zinc-500">
         New patient?{' '}
         <Link to="/register" className="font-medium text-brand-700 hover:underline">
           Create an account
@@ -239,7 +303,7 @@ export function RegisterPage() {
           />
         </Field>
         <div>
-          <label className="flex items-start gap-2 text-sm text-slate-600">
+          <label className="flex items-start gap-2 text-sm text-zinc-600">
             <input type="checkbox" className="mt-0.5 accent-brand-600" {...register('consent')} />I
             understand MediAssist gives preliminary, AI-generated assessments for decision support
             and is not a medical diagnosis.
@@ -250,7 +314,7 @@ export function RegisterPage() {
           Create account
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm text-slate-500">
+      <p className="mt-6 text-center text-sm text-zinc-500">
         Already registered?{' '}
         <Link to="/login" className="font-medium text-brand-700 hover:underline">
           Sign in

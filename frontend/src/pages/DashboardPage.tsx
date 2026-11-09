@@ -44,14 +44,14 @@ function TimelineChart({ data }: { data: DashboardSummary['timeline'] }) {
             <stop offset="100%" stopColor="#14a38b" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
         <XAxis
           dataKey="date"
           tickFormatter={(d: string) => d.slice(5)}
-          tick={{ fontSize: 11, fill: '#64748b' }}
+          tick={{ fontSize: 11, fill: '#71717a' }}
           interval={6}
         />
-        <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#64748b' }} />
+        <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#71717a' }} />
         <Tooltip labelFormatter={(d) => fmtDate(String(d))} formatter={(v) => [v, 'Assessments']} />
         <Area type="monotone" dataKey="count" stroke="#0d8574" strokeWidth={2} fill="url(#fill)" />
       </AreaChart>
@@ -68,9 +68,9 @@ function RiskChart({ data }: { data: Record<RiskLevel, number> }) {
   return (
     <ResponsiveContainer width="100%" height={220}>
       <BarChart data={rows} margin={{ left: -20, right: 8, top: 8 }}>
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-        <XAxis dataKey="risk" tick={{ fontSize: 12, fill: '#64748b' }} />
-        <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#64748b' }} />
+        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" />
+        <XAxis dataKey="risk" tick={{ fontSize: 12, fill: '#71717a' }} />
+        <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#71717a' }} />
         <Tooltip formatter={(v) => [v, 'Assessments']} />
         <Bar dataKey="count" radius={[6, 6, 0, 0]}>
           {rows.map((row) => (
@@ -92,13 +92,13 @@ function DiseaseBreakdown({ data }: { data: Record<Disease, number> }) {
         return (
           <li key={disease}>
             <div className="mb-1 flex items-center justify-between text-sm">
-              <span className="flex items-center gap-2 text-slate-700">
+              <span className="flex items-center gap-2 text-zinc-700">
                 <Icon className="size-4 text-brand-600" aria-hidden />
                 {DISEASE_LABEL[disease]}
               </span>
               <span className="font-medium tabular-nums">{count}</span>
             </div>
-            <div className="h-2 rounded-full bg-slate-100">
+            <div className="h-2 rounded-full bg-zinc-100">
               <div
                 className="h-2 rounded-full bg-brand-500"
                 style={{ width: `${(count / total) * 100}%` }}
@@ -166,10 +166,10 @@ function PatientDashboard({ data }: { data: DashboardSummary }) {
               <Link
                 key={disease}
                 to={`/assess/${disease}`}
-                className="flex items-center gap-3 rounded-lg border border-slate-200 p-4 transition hover:border-brand-500 hover:bg-brand-50"
+                className="flex items-center gap-3 rounded-lg border border-zinc-200 p-4 transition hover:border-brand-500 hover:bg-brand-50"
               >
                 <Icon className="size-6 text-brand-600" aria-hidden />
-                <span className="font-medium text-slate-800">{DISEASE_LABEL[disease]}</span>
+                <span className="font-medium text-zinc-800">{DISEASE_LABEL[disease]}</span>
               </Link>
             )
           })}
@@ -342,17 +342,17 @@ function AdminDashboard({ data }: { data: DashboardSummary }) {
             </Link>
           }
         />
-        <ul className="mt-3 divide-y divide-slate-100">
+        <ul className="mt-3 divide-y divide-zinc-100">
           {audit.data?.items.slice(0, 8).map((log) => (
             <li
               key={log.id}
               className="flex items-center justify-between gap-4 px-5 py-2.5 text-sm"
             >
               <span>
-                <span className="font-medium text-slate-800">{log.user_email ?? 'anonymous'}</span>{' '}
-                <span className="text-slate-500">{titleCase(log.action.replace('.', ' '))}</span>
+                <span className="font-medium text-zinc-800">{log.user_email ?? 'anonymous'}</span>{' '}
+                <span className="text-zinc-500">{titleCase(log.action.replace('.', ' '))}</span>
               </span>
-              <span className="shrink-0 text-xs text-slate-400">
+              <span className="shrink-0 text-xs text-zinc-400">
                 {fmtDate(log.created_at, true)}
               </span>
             </li>

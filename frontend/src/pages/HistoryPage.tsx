@@ -51,7 +51,7 @@ export function HistoryPage() {
         }
       />
       <Card>
-        <div className="flex flex-wrap gap-3 border-b border-slate-100 p-4">
+        <div className="flex flex-wrap gap-3 border-b border-zinc-100 p-4">
           <Select
             aria-label="Module"
             className="w-auto"
