@@ -61,7 +61,8 @@ def test_message_validation_and_status(client, patient, admin):
     assert ask(client, patient, "x" * 1001).status_code == 422
     assert ask(client, admin, "hello").status_code == 403
     status = client.get("/api/assistant/status", headers=auth(patient)).get_json()
-    assert status == {"provider": "rules"}
+    assert status["provider"] == "rules"
+    assert "rules" in status["detail"]
 
 
 # --------------------------------------------------------------------------------------------

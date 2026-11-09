@@ -39,6 +39,9 @@ class HistoryQuerySchema(Schema):
 
 class AssistantStatusSchema(Schema):
     provider = fields.String()
+    detail = fields.String(
+        metadata={"description": "Model in use, or why the assistant is offline"}
+    )
 
 
 def _assistant():
@@ -58,7 +61,8 @@ def _history_stmt(prediction_id: int | None):
 @blp.doc(security=BEARER)
 def status():
     """Which provider is answering: `nvidia` or `claude` (API key configured), or `rules`."""
-    return {"provider": _assistant().provider_name}
+    assistant = _assistant()
+    return {"provider": assistant.provider_name, "detail": assistant.detail}
 
 
 @blp.route("/chat", methods=["POST"])

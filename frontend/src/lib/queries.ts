@@ -166,7 +166,8 @@ export async function downloadReportByCode(code: string) {
 export const useAssistantStatus = () =>
   useQuery({
     queryKey: ['assistant-status'],
-    queryFn: async () => (await api.get<{ provider: string }>('/assistant/status')).data,
+    queryFn: async () =>
+      (await api.get<{ provider: string; detail: string }>('/assistant/status')).data,
     staleTime: Infinity,
   })
 

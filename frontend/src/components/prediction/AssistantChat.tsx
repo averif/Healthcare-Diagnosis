@@ -51,9 +51,20 @@ export function AssistantChat({ predictionId }: { predictionId: number }) {
         description="Questions about this result, answered in plain language."
         action={
           status.data && (
-            <Badge className="bg-zinc-100 text-zinc-600">
-              {PROVIDER_LABEL[status.data.provider] ?? 'Offline mode'}
-            </Badge>
+            <span title={status.data.detail} className="cursor-help">
+              <Badge
+                className={
+                  status.data.provider === 'rules'
+                    ? 'bg-zinc-100 text-zinc-600'
+                    : 'bg-brand-50 text-brand-700 ring-brand-600/15'
+                }
+              >
+                {status.data.provider !== 'rules' && (
+                  <span className="size-1.5 rounded-full bg-brand-500" aria-hidden />
+                )}
+                {PROVIDER_LABEL[status.data.provider] ?? 'Offline mode'}
+              </Badge>
+            </span>
           )
         }
       />

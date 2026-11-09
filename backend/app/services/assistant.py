@@ -301,6 +301,8 @@ class ClinicalAssistant:
         nvidia_reasoning: bool = False,
     ):
         self.llm: NvidiaProvider | ClaudeProvider | None = None
+        # Human-readable explanation of the active provider, shown by /api/health and the UI
+        self.detail = ""
         nvidia_key = os.getenv("NVIDIA_API_KEY")
         if provider == "auto":
             if nvidia_key:
@@ -309,6 +311,9 @@ class ClinicalAssistant:
                 provider = "claude"
             else:
                 provider = "rules"
+                self.detail = "No NVIDIA_API_KEY or ANTHROPIC_API_KEY found in the environment."
+        elif provider == "rules":
+            self.detail = "ASSISTANT_PROVIDER is set to 'rules'."
         try:
             if provider == "nvidia":
                 if not nvidia_key:
@@ -316,11 +321,14 @@ class ClinicalAssistant:
                 self.llm = NvidiaProvider(
                     nvidia_model, nvidia_base_url, nvidia_key, reasoning=nvidia_reasoning
                 )
+                self.detail = f"NVIDIA API, model {nvidia_model}"
             elif provider == "claude":
                 self.llm = ClaudeProvider(model)
+                self.detail = f"Claude API, model {model}"
         except Exception as exc:  # missing package or credentials
             log.warning("%s assistant unavailable, using rules fallback: %s", provider, exc)
             self.llm = None
+            self.detail = f"{provider} unavailable: {exc}"
 
     @property
     def provider_name(self) -> str:

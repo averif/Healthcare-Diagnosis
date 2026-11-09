@@ -56,6 +56,7 @@ def create_app(config_name: str | None = None, overrides: dict | None = None) ->
         nvidia_base_url=app.config["NVIDIA_BASE_URL"],
         nvidia_reasoning=app.config["NVIDIA_REASONING"],
     )
+    app.logger.info("AI assistant: %s", app.extensions["assistant"].detail)
 
     for blueprint in (
         health.blp,

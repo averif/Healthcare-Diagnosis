@@ -5,6 +5,7 @@ def test_health_endpoint_reports_ok(client):
     assert body["status"] == "ok"
     assert body["database"] == "ok"
     assert body["version"]
+    assert body["assistant"] == "rules"  # tests never use a paid API
 
 
 def test_openapi_spec_is_published(client):

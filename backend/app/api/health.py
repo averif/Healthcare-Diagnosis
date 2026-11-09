@@ -14,6 +14,9 @@ class HealthSchema(Schema):
     status = fields.String(required=True)
     version = fields.String(required=True)
     database = fields.String(required=True)
+    assistant = fields.String(
+        required=True, metadata={"description": "Active AI assistant: nvidia, claude or rules"}
+    )
 
 
 @blp.route("/health")
@@ -29,4 +32,5 @@ def health():
         "status": "ok",
         "version": current_app.config["API_VERSION"],
         "database": database,
+        "assistant": current_app.extensions["assistant"].provider_name,
     }
