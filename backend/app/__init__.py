@@ -50,7 +50,11 @@ def create_app(config_name: str | None = None, overrides: dict | None = None) ->
     init_jwt(app)
     app.extensions["prediction_service"] = PredictionService(app.config["MODELS_DIR"])
     app.extensions["assistant"] = ClinicalAssistant(
-        app.config["ASSISTANT_PROVIDER"], app.config["ASSISTANT_MODEL"]
+        app.config["ASSISTANT_PROVIDER"],
+        app.config["ASSISTANT_MODEL"],
+        nvidia_model=app.config["NVIDIA_MODEL"],
+        nvidia_base_url=app.config["NVIDIA_BASE_URL"],
+        nvidia_reasoning=app.config["NVIDIA_REASONING"],
     )
 
     for blueprint in (

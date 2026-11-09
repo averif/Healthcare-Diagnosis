@@ -29,7 +29,7 @@ class ChatMessageSchema(Schema):
 
 class ChatReplySchema(Schema):
     reply = fields.Nested(ChatMessageSchema)
-    provider = fields.String(metadata={"description": "claude, rules or safety"})
+    provider = fields.String(metadata={"description": "nvidia, claude, rules or safety"})
     emergency = fields.Boolean()
 
 
@@ -57,7 +57,7 @@ def _history_stmt(prediction_id: int | None):
 @blp.response(200, AssistantStatusSchema)
 @blp.doc(security=BEARER)
 def status():
-    """Which provider is answering: `claude` (API key configured) or `rules` (offline)."""
+    """Which provider is answering: `nvidia` or `claude` (API key configured), or `rules`."""
     return {"provider": _assistant().provider_name}
 
 

@@ -74,7 +74,9 @@ synopsis specifies SQLite/MySQL, so MySQL is the documented target.
 | `LOGIN_RATE_LIMIT`, `REGISTER_RATE_LIMIT` | API | `10 per minute`, `5 per minute` | Brute-force protection |
 | `RATELIMIT_STORAGE_URI` | API | `memory://` | Use `redis://…` to share limits across gunicorn workers |
 | `JWT_ACCESS_MINUTES`, `JWT_REFRESH_DAYS` | API | `30`, `7` | Token lifetimes |
-| `ASSISTANT_PROVIDER` | API | `auto` | `auto`, `claude` or `rules` |
+| `ASSISTANT_PROVIDER` | API | `auto` | `auto`, `nvidia`, `claude` or `rules` |
+| `NVIDIA_API_KEY`, `NVIDIA_MODEL` | API | unset, `nvidia/nemotron-3.5-lightning-30b-a3b` | Optional NVIDIA assistant (used first in `auto` mode) |
+| `NVIDIA_REASONING` | API | `0` | `1` lets Nemotron reason before answering (about 8× slower) |
 | `ANTHROPIC_API_KEY`, `ASSISTANT_MODEL` | API | unset, `claude-opus-5-5` | Optional Claude assistant |
 | `SEED_DEMO`, `DEMO_PASSWORD` | Docker | `0`, `Demo@12345` | Demo data on first start |
 | `MODELS_DIR`, `REPORTS_DIR` | API | `ml/models`, `backend/generated_reports` | Model and PDF locations |
@@ -89,6 +91,6 @@ synopsis specifies SQLite/MySQL, so MySQL is the documented target.
 - [ ] Shared rate-limit storage (Redis) if running more than one API instance
 - [ ] Database backups (managed service snapshots, or `mysqldump` on a schedule)
 - [ ] `SEED_DEMO=0` and demo accounts removed for anything beyond a demo
-- [ ] Anthropic API key stored as a platform secret (never in Git)
+- [ ] NVIDIA / Anthropic API keys stored as platform secrets (never in Git)
 - [ ] Remember: this is a **prototype**. Real clinical use would need regulatory approval,
       clinical validation and data-protection compliance (e.g. India's DPDP Act 2023).

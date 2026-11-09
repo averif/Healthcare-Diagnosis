@@ -20,7 +20,7 @@ nested cross-validation against baselines · model cards in the app · RBAC, aud
 |---|---|
 | Frontend | React 19, TypeScript, Vite, Tailwind CSS, TanStack Query, React Hook Form + Zod, Recharts |
 | Backend | Python, Flask 3, flask-smorest (OpenAPI), SQLAlchemy 2 + Alembic, Flask-JWT-Extended, Argon2, ReportLab |
-| AI assistant | Claude via the Anthropic Python SDK (optional), with an offline rule-based fallback |
+| AI assistant | NVIDIA Nemotron (OpenAI-compatible API) or Claude (Anthropic SDK), both optional, with an offline rule-based fallback |
 | ML | scikit-learn (Decision Trees; Random Forest for symptoms), pandas, NumPy, joblib, Jupyter |
 | Database | SQLite (development) / MySQL (deployment) |
 | Quality | pytest, Vitest, React Testing Library, Playwright, Ruff, oxlint, Prettier, pip-audit, GitHub Actions |

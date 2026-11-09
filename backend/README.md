@@ -21,8 +21,9 @@ ruff check . && ruff format --check .
 
 SQLite is used by default. Set `DATABASE_URL` in `.env` to use MySQL.
 
-**AI assistant:** works offline out of the box (rule-based answers). To use Claude, add
-`ANTHROPIC_API_KEY=...` to `backend/.env` and restart. `ASSISTANT_MODEL` picks the model
+**AI assistant:** works offline out of the box (rule-based answers). With `NVIDIA_API_KEY` set
+(in `backend/.env` or the project-root `.env`) it uses NVIDIA Nemotron; with `ANTHROPIC_API_KEY`
+it uses Claude. Restart the API after changing keys. `ASSISTANT_MODEL` picks the model
 (default `claude-opus-5-5`; `claude-haiku-5-5` is far cheaper for a demo).
 
 Demo accounts (`flask seed`): `admin@mediassist.test`, `doctor@mediassist.test`,

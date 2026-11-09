@@ -1,7 +1,8 @@
 """AI clinical assistant: explains a stored prediction in plain language, with guardrails.
 
-Two providers:
-- ``claude``: Claude via the Anthropic SDK, grounded in the prediction and its explanation.
+Providers (all grounded in the prediction and its explanation):
+- ``nvidia``: NVIDIA API catalog models (default Nemotron) via the OpenAI-compatible endpoint.
+- ``claude``: Claude via the Anthropic SDK.
 - ``rules``:  an offline, deterministic fallback that answers common questions from the same
               data. Used when no API key is configured or the API is unavailable.
 
@@ -69,7 +70,7 @@ How to answer:
 @dataclass
 class AssistantReply:
     text: str
-    provider: str  # "claude", "rules" or "safety"
+    provider: str  # "nvidia", "claude", "rules" or "safety"
     emergency: bool = False
 
 
@@ -183,36 +184,89 @@ def rules_reply(question: str, p: Prediction | None) -> str:
 
 
 # --------------------------------------------------------------------------------------------
-# Claude provider
+# LLM providers
 # --------------------------------------------------------------------------------------------
+
+
+def _conversation(question: str, p: Prediction | None, history: list[dict]) -> list[dict]:
+    """Grounding context first, then the last few turns, then the new question."""
+    context = prediction_context(p) if p else "No specific prediction selected."
+    return [
+        {"role": "user", "content": f"<prediction>\n{context}\n</prediction>"},
+        {"role": "assistant", "content": "Understood. I'll answer questions about this result."},
+        *history[-8:],  # last few turns keep the conversation coherent and cheap
+        {"role": "user", "content": question},
+    ]
+
+
+THINK_BLOCK = re.compile(r"<think>.*?</think>", re.DOTALL | re.IGNORECASE)
+
+
+def plain_text(text: str) -> str:
+    """The chat shows plain text, so drop Markdown emphasis and headings models sometimes add."""
+    text = re.sub(r"\*\*(.+?)\*\*|__(.+?)__", lambda m: m.group(1) or m.group(2), text)
+    return re.sub(r"^#{1,6}\s+", "", text, flags=re.MULTILINE).strip()
+
+
+class NvidiaProvider:
+    """NVIDIA API catalog (build.nvidia.com) via its OpenAI-compatible endpoint."""
+
+    name = "nvidia"
+
+    def __init__(self, model: str, base_url: str, api_key: str, reasoning: bool = False):
+        import openai  # imported lazily so the app runs without the package configured
+
+        self._sdk = openai
+        self.client = openai.OpenAI(base_url=base_url, api_key=api_key, timeout=30.0, max_retries=1)
+        self.model = model
+        # Nemotron "thinks" before answering by default. For short explanations that only
+        # adds latency (measured: median 14.8 s with reasoning vs 1.8 s without, same quality).
+        self.reasoning = reasoning
+
+    def errors(self):
+        o = self._sdk
+        return o.AuthenticationError, o.RateLimitError, o.APIStatusError, o.APIConnectionError
+
+    def reply(self, question: str, p: Prediction | None, history: list[dict]) -> str | None:
+        response = self.client.chat.completions.create(
+            model=self.model,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                *_conversation(question, p, history),
+            ],
+            temperature=0.2,  # factual explanations, not creative writing
+            top_p=0.9,
+            max_tokens=1500,  # room for optional reasoning plus a ~150-word answer
+            extra_body=None
+            if self.reasoning
+            else {"chat_template_kwargs": {"enable_thinking": False}},
+        )
+        text = THINK_BLOCK.sub("", response.choices[0].message.content or "").strip()
+        return text or None
 
 
 class ClaudeProvider:
     """Calls Claude through the official Anthropic SDK (credentials from the environment)."""
 
+    name = "claude"
+
     def __init__(self, model: str):
         import anthropic  # imported lazily so the app runs without the package configured
 
-        self._anthropic = anthropic
+        self._sdk = anthropic
         self.client = anthropic.Anthropic(timeout=30.0, max_retries=2)
         self.model = model
 
+    def errors(self):
+        a = self._sdk
+        return a.AuthenticationError, a.RateLimitError, a.APIStatusError, a.APIConnectionError
+
     def reply(self, question: str, p: Prediction | None, history: list[dict]) -> str | None:
-        context = prediction_context(p) if p else "No specific prediction selected."
-        messages = [
-            {"role": "user", "content": f"<prediction>\n{context}\n</prediction>"},
-            {
-                "role": "assistant",
-                "content": "Understood. I'll answer questions about this result.",
-            },
-            *history[-8:],  # last few turns keep the conversation coherent and cheap
-            {"role": "user", "content": question},
-        ]
         response = self.client.beta.messages.create(
             model=self.model,
             max_tokens=2048,  # answers are deliberately short (<= ~150 words)
             system=SYSTEM_PROMPT,
-            messages=messages,
+            messages=_conversation(question, p, history),
             output_config={"effort": "low"},  # conversational Q&A; low effort is enough
             betas=["server-side-fallback-2026-07-01"],
             fallbacks="default",  # retry on a fallback model if a safety classifier declines
@@ -227,40 +281,69 @@ class ClaudeProvider:
 # Facade used by the API
 # --------------------------------------------------------------------------------------------
 
+NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
+NVIDIA_DEFAULT_MODEL = "nvidia/nemotron-3.5-lightning-30b-a3b"
+
 
 class ClinicalAssistant:
-    def __init__(self, provider: str, model: str):
-        self.claude: ClaudeProvider | None = None
-        wants_claude = provider == "claude" or (
-            provider == "auto" and os.getenv("ANTHROPIC_API_KEY")
-        )
-        if wants_claude:
-            try:
-                self.claude = ClaudeProvider(model)
-            except Exception as exc:  # missing package or credentials
-                log.warning("Claude assistant unavailable, using rules fallback: %s", exc)
+    """Picks an LLM provider from configuration; the offline rules engine is always available.
+
+    provider: "auto" (NVIDIA if NVIDIA_API_KEY is set, else Claude if ANTHROPIC_API_KEY is set,
+    else rules), "nvidia", "claude" or "rules".
+    """
+
+    def __init__(
+        self,
+        provider: str,
+        model: str = "claude-opus-5-5",
+        nvidia_model: str = NVIDIA_DEFAULT_MODEL,
+        nvidia_base_url: str = NVIDIA_BASE_URL,
+        nvidia_reasoning: bool = False,
+    ):
+        self.llm: NvidiaProvider | ClaudeProvider | None = None
+        nvidia_key = os.getenv("NVIDIA_API_KEY")
+        if provider == "auto":
+            if nvidia_key:
+                provider = "nvidia"
+            elif os.getenv("ANTHROPIC_API_KEY"):
+                provider = "claude"
+            else:
+                provider = "rules"
+        try:
+            if provider == "nvidia":
+                if not nvidia_key:
+                    raise RuntimeError("NVIDIA_API_KEY is not set")
+                self.llm = NvidiaProvider(
+                    nvidia_model, nvidia_base_url, nvidia_key, reasoning=nvidia_reasoning
+                )
+            elif provider == "claude":
+                self.llm = ClaudeProvider(model)
+        except Exception as exc:  # missing package or credentials
+            log.warning("%s assistant unavailable, using rules fallback: %s", provider, exc)
+            self.llm = None
 
     @property
     def provider_name(self) -> str:
-        return "claude" if self.claude else "rules"
+        return self.llm.name if self.llm else "rules"
 
     def answer(self, question: str, p: Prediction | None, history: list[dict]) -> AssistantReply:
         if EMERGENCY_PATTERNS.search(question):
             return AssistantReply(EMERGENCY_REPLY, "safety", emergency=True)
 
-        if self.claude:
-            anthropic = self.claude._anthropic
+        if self.llm:
+            auth_error, rate_limit_error, status_error, connection_error = self.llm.errors()
+            name = self.llm.name
             try:
-                text = self.claude.reply(question, p, history)
+                text = plain_text(self.llm.reply(question, p, history) or "")
                 if text:
-                    return AssistantReply(f"{text}\n\n{REMINDER}", "claude")
-            except anthropic.AuthenticationError:
-                log.error("Anthropic API key rejected; falling back to rules")
-            except anthropic.RateLimitError:
-                log.warning("Anthropic rate limit hit; falling back to rules")
-            except anthropic.APIStatusError as exc:
-                log.warning("Anthropic API error %s; falling back to rules", exc.status_code)
-            except anthropic.APIConnectionError:
-                log.warning("Anthropic API unreachable; falling back to rules")
+                    return AssistantReply(f"{text}\n\n{REMINDER}", name)
+            except auth_error:
+                log.error("%s API key rejected; falling back to rules", name)
+            except rate_limit_error:
+                log.warning("%s rate limit hit; falling back to rules", name)
+            except status_error as exc:
+                log.warning("%s API error %s; falling back to rules", name, exc.status_code)
+            except connection_error:
+                log.warning("%s API unreachable or timed out; falling back to rules", name)
 
         return AssistantReply(f"{rules_reply(question, p)}\n\n{REMINDER}", "rules")

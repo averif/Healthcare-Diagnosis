@@ -26,10 +26,13 @@ class Config:
     MODELS_DIR = Path(os.getenv("MODELS_DIR", str(PROJECT_ROOT / "ml" / "models")))
     REPORTS_DIR = Path(os.getenv("REPORTS_DIR", str(BASE_DIR / "generated_reports")))
 
-    # AI clinical assistant: "auto" uses Claude when ANTHROPIC_API_KEY is set, else offline rules.
-    # Force with "claude" or "rules".
+    # AI clinical assistant: "auto" uses NVIDIA when NVIDIA_API_KEY is set, else Claude when
+    # ANTHROPIC_API_KEY is set, else offline rules. Force with "nvidia", "claude" or "rules".
     ASSISTANT_PROVIDER = os.getenv("ASSISTANT_PROVIDER", "auto")
     ASSISTANT_MODEL = os.getenv("ASSISTANT_MODEL", "claude-opus-5-5")
+    NVIDIA_MODEL = os.getenv("NVIDIA_MODEL", "nvidia/nemotron-3.5-lightning-30b-a3b")
+    NVIDIA_BASE_URL = os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")
+    NVIDIA_REASONING = os.getenv("NVIDIA_REASONING", "0") == "1"  # slower; rarely needed
 
     RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
 

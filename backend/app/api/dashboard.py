@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from flask_jwt_extended import current_user
 from flask_smorest import Blueprint
@@ -52,7 +52,7 @@ def summary():
         .group_by(func.date(Prediction.created_at))
     ).all()
     per_day = {str(day): n for day, n in per_day_rows}  # SQLite returns str, MySQL a date
-    today = date.today()
+    today = datetime.now(UTC).date()  # stored timestamps are UTC, so bucket days in UTC
     timeline = []
     for offset in range(29, -1, -1):
         day = today - timedelta(days=offset)

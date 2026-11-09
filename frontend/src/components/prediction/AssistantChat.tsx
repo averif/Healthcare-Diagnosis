@@ -7,6 +7,12 @@ import { errorMessage } from '@/lib/api'
 import { useAssistantStatus, useChatHistory, useSendChat } from '@/lib/queries'
 import { cn } from '@/lib/utils'
 
+const PROVIDER_LABEL: Record<string, string> = {
+  nvidia: 'NVIDIA AI',
+  claude: 'Claude AI',
+  rules: 'Offline mode',
+}
+
 const SUGGESTIONS = [
   'Why is my risk this level?',
   'What should I do next?',
@@ -46,7 +52,7 @@ export function AssistantChat({ predictionId }: { predictionId: number }) {
         action={
           status.data && (
             <Badge className="bg-slate-100 text-slate-600">
-              {status.data.provider === 'claude' ? 'Claude AI' : 'Offline mode'}
+              {PROVIDER_LABEL[status.data.provider] ?? 'Offline mode'}
             </Badge>
           )
         }

@@ -40,6 +40,8 @@ services:
       ASSISTANT_PROVIDER: ${ASSISTANT_PROVIDER:-auto}
       ASSISTANT_MODEL: ${ASSISTANT_MODEL:-claude-opus-5-5}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      NVIDIA_API_KEY: ${NVIDIA_API_KEY:-}
+      NVIDIA_MODEL: ${NVIDIA_MODEL:-nvidia/nemotron-3.5-lightning-30b-a3b}
       DEMO_PASSWORD: ${DEMO_PASSWORD:-}
       SEED_DEMO: ${SEED_DEMO:-0}
     volumes:

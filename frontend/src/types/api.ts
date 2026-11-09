@@ -170,7 +170,7 @@ export interface ChatMessage {
 
 export interface ChatReply {
   reply: ChatMessage
-  provider: 'claude' | 'rules' | 'safety'
+  provider: 'nvidia' | 'claude' | 'rules' | 'safety'
   emergency: boolean
 }
 
