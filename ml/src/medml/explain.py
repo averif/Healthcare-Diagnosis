@@ -165,7 +165,7 @@ def explain(
     for feat in order:
         spec = by_name[feat]
         raw = inputs.get(feat)
-        imputed = raw is None or (isinstance(raw, float) and np.isnan(raw))
+        imputed = bool(raw is None or (isinstance(raw, float) and np.isnan(raw)))
         value = fills[feat] if imputed else raw
         shown = spec.describe_value(value)
 

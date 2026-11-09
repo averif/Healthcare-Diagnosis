@@ -94,3 +94,10 @@ def test_risk_bands():
     assert risk_level(0.1) == "low"
     assert risk_level(0.5) == "moderate"
     assert risk_level(0.9) == "high"
+
+
+@pytest.mark.parametrize("disease", ["diabetes", "heart", "liver"])
+def test_results_are_json_serialisable(disease):
+    import json
+
+    json.dumps(ModelBundle.load(disease).predict(SAMPLES[disease]))

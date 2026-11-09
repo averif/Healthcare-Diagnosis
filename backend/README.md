@@ -5,7 +5,7 @@ From the repository root (one shared virtualenv for `backend/` and `ml/`):
 ```bash
 python -m venv .venv
 .venv/Scripts/activate            # Windows (use `source .venv/bin/activate` on macOS/Linux)
-pip install -r backend/requirements-dev.txt
+pip install -r backend/requirements-dev.txt -e ml   # -e ml installs the shared medml package
 ```
 
 Then from `backend/`:
@@ -13,10 +13,25 @@ Then from `backend/`:
 ```bash
 cp .env.example .env
 flask db upgrade                  # create / migrate the database
-flask seed                        # demo admin, doctor and patient accounts
+flask seed --demo                 # demo accounts + ~60 realistic sample predictions
 flask run                         # http://127.0.0.1:5000  — Swagger UI at /api/docs
 pytest --cov                      # tests + coverage
 ruff check . && ruff format --check .
 ```
 
 SQLite is used by default. Set `DATABASE_URL` in `.env` to use MySQL.
+
+Demo accounts (`flask seed`): `admin@mediassist.test`, `doctor@mediassist.test`,
+`doctor2@mediassist.test`, `patient@mediassist.test` (password: `DEMO_PASSWORD` in `.env`).
+
+## Layout
+
+| Path | Contents |
+|---|---|
+| `app/api/` | Blueprints: auth, patients, predictions + reports, dashboard + models, admin |
+| `app/services/predictor.py` | Loads the trained models once and stores explained predictions |
+| `app/services/guidance.py` | General guidance, red-flag rules and symptom triage |
+| `app/services/reports.py` | ReportLab PDF reports with QR-coded report IDs |
+| `app/security.py` | JWT wiring, `roles_required`, record-level access rules, audit helper |
+| `app/schemas.py` | Marshmallow request/response schemas (also generate the Swagger docs) |
+| `tests/` | 41 API tests (pytest), ~97% coverage |

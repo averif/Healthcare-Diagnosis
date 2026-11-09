@@ -15,6 +15,7 @@ from .patient import Patient
 from .prediction import Prediction
 from .report import Report
 from .review import DoctorReview
+from .token import RevokedToken
 from .user import User
 
 __all__ = [
@@ -29,6 +30,7 @@ __all__ = [
     "PredictionStatus",
     "Report",
     "ReviewVerdict",
+    "RevokedToken",
     "RiskLevel",
     "Role",
     "Sex",

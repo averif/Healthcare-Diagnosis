@@ -26,7 +26,7 @@ PDF reports, role-based dashboards and an AI clinical assistant.
 |---|---|---|---|
 | 1. Foundation & design | 1–2 | Repo, scaffolds, requirements, architecture, database schema, datasets | ✅ Done |
 | 2. ML pipeline | 3–5 | Exploratory analysis, preprocessing, Decision Tree tuning, evaluation, model cards, explainer | ✅ Done |
-| 3. Backend API | 6–7 | Auth / RBAC, patients, predictions, reviews, PDF reports, dashboard, audit log | ⏳ |
+| 3. Backend API | 6–7 | Auth / RBAC, patients, predictions, reviews, PDF reports, dashboard, audit log | ✅ Done |
 | 4. Frontend & assistant | 8–9 | All pages, dashboards, model performance page, AI clinical assistant | ⏳ |
 | 5. Test, deploy, document | 10–12 | E2E tests, Docker, deployment, final report, presentation | ⏳ |
 
@@ -43,7 +43,7 @@ python -m medml.train                  # optional: retrain models (trained model
 # 2. Backend (http://127.0.0.1:5000, Swagger UI at /api/docs)
 cd backend
 cp .env.example .env
-flask db upgrade && flask seed
+flask db upgrade && flask seed --demo   # demo accounts + ~60 sample predictions
 flask run
 
 # 3. Frontend (http://localhost:5173), in a second terminal

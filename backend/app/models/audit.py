@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from sqlalchemy import JSON, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..extensions import db
 from .base import TimestampMixin, enum_column
@@ -22,6 +22,8 @@ class AuditLog(TimestampMixin, db.Model):
     entity_id: Mapped[int | None] = mapped_column(Integer)
     ip_address: Mapped[str | None] = mapped_column(String(45))
     details: Mapped[dict | None] = mapped_column(JSON)
+
+    user = relationship("User")
 
 
 class ChatMessage(TimestampMixin, db.Model):

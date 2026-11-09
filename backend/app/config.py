@@ -9,8 +9,8 @@ PROJECT_ROOT = BASE_DIR.parent
 
 
 class Config:
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me")
-    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret-change-me")
+    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-change-me-in-production-0000")
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-jwt-secret-change-me-in-production-00")
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=int(os.getenv("JWT_ACCESS_MINUTES", "30")))
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=int(os.getenv("JWT_REFRESH_DAYS", "7")))
 
@@ -38,6 +38,21 @@ class Config:
     OPENAPI_URL_PREFIX = "/api"
     OPENAPI_SWAGGER_UI_PATH = "/docs"
     OPENAPI_SWAGGER_UI_URL = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+    API_SPEC_OPTIONS = {
+        "info": {
+            "description": "Explainable, Decision Tree based clinical decision support. "
+            "Click **Authorize** and paste an access token from `POST /api/auth/login`."
+        },
+        "components": {
+            "securitySchemes": {
+                "bearerAuth": {"type": "http", "scheme": "bearer", "bearerFormat": "JWT"}
+            }
+        },
+    }
+
+    # Rate limits for authentication endpoints (brute-force protection)
+    LOGIN_RATE_LIMIT = os.getenv("LOGIN_RATE_LIMIT", "10 per minute")
+    REGISTER_RATE_LIMIT = os.getenv("REGISTER_RATE_LIMIT", "5 per minute")
 
 
 class DevelopmentConfig(Config):
@@ -48,6 +63,7 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     RATELIMIT_ENABLED = False
+    REPORTS_DIR = Path(os.getenv("TEST_REPORTS_DIR", str(BASE_DIR / "instance" / "test_reports")))
 
 
 class ProductionConfig(Config):
