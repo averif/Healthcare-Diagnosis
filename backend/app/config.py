@@ -26,8 +26,10 @@ class Config:
     MODELS_DIR = Path(os.getenv("MODELS_DIR", str(PROJECT_ROOT / "ml" / "models")))
     REPORTS_DIR = Path(os.getenv("REPORTS_DIR", str(BASE_DIR / "generated_reports")))
 
-    # AI clinical assistant (Phase 4): "claude", "gemini" or "rules" (offline fallback)
-    ASSISTANT_PROVIDER = os.getenv("ASSISTANT_PROVIDER", "rules")
+    # AI clinical assistant: "auto" uses Claude when ANTHROPIC_API_KEY is set, else offline rules.
+    # Force with "claude" or "rules".
+    ASSISTANT_PROVIDER = os.getenv("ASSISTANT_PROVIDER", "auto")
+    ASSISTANT_MODEL = os.getenv("ASSISTANT_MODEL", "claude-opus-5-5")
 
     RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
 
@@ -63,6 +65,7 @@ class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
     RATELIMIT_ENABLED = False
+    ASSISTANT_PROVIDER = "rules"  # tests never call the paid API
     REPORTS_DIR = Path(os.getenv("TEST_REPORTS_DIR", str(BASE_DIR / "instance" / "test_reports")))
 
 

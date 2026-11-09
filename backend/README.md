@@ -21,6 +21,10 @@ ruff check . && ruff format --check .
 
 SQLite is used by default. Set `DATABASE_URL` in `.env` to use MySQL.
 
+**AI assistant:** works offline out of the box (rule-based answers). To use Claude, add
+`ANTHROPIC_API_KEY=...` to `backend/.env` and restart. `ASSISTANT_MODEL` picks the model
+(default `claude-opus-5-5`; `claude-haiku-5-5` is far cheaper for a demo).
+
 Demo accounts (`flask seed`): `admin@mediassist.test`, `doctor@mediassist.test`,
 `doctor2@mediassist.test`, `patient@mediassist.test` (password: `DEMO_PASSWORD` in `.env`).
 
@@ -34,4 +38,5 @@ Demo accounts (`flask seed`): `admin@mediassist.test`, `doctor@mediassist.test`,
 | `app/services/reports.py` | ReportLab PDF reports with QR-coded report IDs |
 | `app/security.py` | JWT wiring, `roles_required`, record-level access rules, audit helper |
 | `app/schemas.py` | Marshmallow request/response schemas (also generate the Swagger docs) |
-| `tests/` | 41 API tests (pytest), ~97% coverage |
+| `app/services/assistant.py` | AI clinical assistant: emergency screen, Claude provider, offline rules fallback |
+| `tests/` | 49 API tests (pytest), ~97% coverage; the assistant is tested with a fake Claude client |

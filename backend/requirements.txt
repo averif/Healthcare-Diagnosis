@@ -20,3 +20,6 @@ joblib>=1.4
 
 # Reports
 reportlab>=4.2
+
+# AI clinical assistant (optional at runtime: without an API key the offline rules answer)
+anthropic>=2.0

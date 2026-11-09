@@ -15,6 +15,10 @@ export default defineConfig({
     // Forward API calls to the Flask backend during development
     proxy: { '/api': 'http://127.0.0.1:5000' },
   },
+  build: {
+    // main bundle is ~200 kB gzipped; Recharts is split into its own lazy chunk
+    chunkSizeWarningLimit: 700,
+  },
   test: {
     environment: 'jsdom',
     globals: true,

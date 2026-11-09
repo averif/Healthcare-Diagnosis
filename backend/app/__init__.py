@@ -30,13 +30,17 @@ def create_app(config_name: str | None = None, overrides: dict | None = None) ->
     rest_api.init_app(app)
 
     from . import models  # noqa: F401  (register models with SQLAlchemy metadata)
-    from .api import admin, auth, dashboard, health, patients, predictions
+    from .api import admin, assistant, auth, dashboard, health, patients, predictions
     from .cli import register_cli
     from .security import init_jwt
+    from .services.assistant import ClinicalAssistant
     from .services.predictor import PredictionService
 
     init_jwt(app)
     app.extensions["prediction_service"] = PredictionService(app.config["MODELS_DIR"])
+    app.extensions["assistant"] = ClinicalAssistant(
+        app.config["ASSISTANT_PROVIDER"], app.config["ASSISTANT_MODEL"]
+    )
 
     for blueprint in (
         health.blp,
@@ -47,6 +51,7 @@ def create_app(config_name: str | None = None, overrides: dict | None = None) ->
         dashboard.blp,
         dashboard.models_blp,
         admin.blp,
+        assistant.blp,
     ):
         rest_api.register_blueprint(blueprint, url_prefix=f"/api{blueprint.url_prefix or ''}")
     register_cli(app)

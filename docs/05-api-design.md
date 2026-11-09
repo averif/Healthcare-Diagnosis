@@ -3,7 +3,7 @@
 Base path `/api`. JSON in and out. Authenticated endpoints need `Authorization: Bearer <access token>`.
 Interactive Swagger documentation is generated automatically at **`/api/docs`**.
 
-Status: ✅ implemented (41 automated API tests) · ⏳ planned
+Status: ✅ implemented (49 automated API tests)
 
 ## Auth
 | Method | Path | Roles | Description | Status |
@@ -66,7 +66,9 @@ Status: ✅ implemented (41 automated API tests) · ⏳ planned
 |---|---|---|---|---|
 | GET | `/dashboard/summary` | any | Totals, risk / disease / status breakdown, 30-day timeline, recent predictions (scoped to the caller) | ✅ |
 | GET | `/models` | doctor, admin | Full model cards (metrics, ROC, confusion matrix, comparison) + usage count | ✅ |
-| POST | `/assistant/chat` | patient, doctor | Ask about a prediction (grounded, guard-railed) | ⏳ Phase 4 |
+| GET | `/assistant/status` | patient, doctor | Which provider answers: `claude` or `rules` (offline) | ✅ |
+| POST | `/assistant/chat` | patient, doctor | Ask about a prediction (grounded, guard-railed, 20/min) | ✅ |
+| GET | `/assistant/history` | patient, doctor | The caller's own conversation about one prediction | ✅ |
 | GET / POST | `/admin/users` | admin | List (filter by role, search) and create users | ✅ |
 | PATCH | `/admin/users/{id}` | admin | Rename, change role, activate / deactivate (cannot demote yourself) | ✅ |
 | PUT | `/admin/patients/{id}/doctor` | admin | Assign (or unassign with `null`) a doctor | ✅ |

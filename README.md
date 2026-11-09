@@ -15,7 +15,8 @@ PDF reports, role-based dashboards and an AI clinical assistant.
 | Layer | Technology |
 |---|---|
 | Frontend | React 19, TypeScript, Vite, Tailwind CSS, TanStack Query, React Hook Form + Zod, Recharts |
-| Backend | Python, Flask 3, flask-smorest (OpenAPI), SQLAlchemy 2 + Alembic, Flask-JWT-Extended, Argon2 |
+| Backend | Python, Flask 3, flask-smorest (OpenAPI), SQLAlchemy 2 + Alembic, Flask-JWT-Extended, Argon2, ReportLab |
+| AI assistant | Claude via the Anthropic Python SDK (optional), with an offline rule-based fallback |
 | ML | scikit-learn (Decision Trees; Random Forest for symptoms), pandas, NumPy, joblib, Jupyter |
 | Database | SQLite (development) / MySQL (deployment) |
 | Quality | pytest, Vitest, React Testing Library, Ruff, oxlint, Prettier, GitHub Actions |
@@ -27,7 +28,7 @@ PDF reports, role-based dashboards and an AI clinical assistant.
 | 1. Foundation & design | 1–2 | Repo, scaffolds, requirements, architecture, database schema, datasets | ✅ Done |
 | 2. ML pipeline | 3–5 | Exploratory analysis, preprocessing, Decision Tree tuning, evaluation, model cards, explainer | ✅ Done |
 | 3. Backend API | 6–7 | Auth / RBAC, patients, predictions, reviews, PDF reports, dashboard, audit log | ✅ Done |
-| 4. Frontend & assistant | 8–9 | All pages, dashboards, model performance page, AI clinical assistant | ⏳ |
+| 4. Frontend & assistant | 8–9 | All pages, dashboards, model performance page, AI clinical assistant | ✅ Done |
 | 5. Test, deploy, document | 10–12 | E2E tests, Docker, deployment, final report, presentation | ⏳ |
 
 ## Quick start
@@ -60,3 +61,4 @@ npm run dev
 4. [Datasets and data-quality findings](docs/04-datasets.md)
 5. [REST API design](docs/05-api-design.md)
 6. [Model development and evaluation](docs/06-model-evaluation.md)
+7. [Frontend and AI assistant](docs/07-frontend-and-assistant.md)
