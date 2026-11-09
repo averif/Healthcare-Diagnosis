@@ -1,5 +1,7 @@
+import { cloneElement, isValidElement } from 'react'
 import type {
   InputHTMLAttributes,
+  ReactElement,
   ReactNode,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
@@ -44,12 +46,21 @@ export function Field({
       <label htmlFor={id} className="block text-sm font-medium text-slate-700">
         {label}
         {required ? (
-          <span className="text-red-500"> *</span>
+          // the asterisk is visual only; screen readers get aria-required on the control
+          <span className="text-red-500" aria-hidden>
+            {' '}
+            *
+          </span>
         ) : (
           <span className="font-normal text-slate-400"> (optional)</span>
         )}
       </label>
-      {children}
+      {isValidElement(children)
+        ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+            'aria-required': required || undefined,
+            'aria-describedby': error ? `${id}-error` : undefined,
+          })
+        : children}
       {error ? (
         <p id={`${id}-error`} className="text-xs text-red-600" role="alert">
           {error}

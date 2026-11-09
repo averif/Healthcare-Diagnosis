@@ -10,6 +10,10 @@ PDF reports, role-based dashboards and an AI clinical assistant.
 
 > ⚠️ Decision support only. This is not a medical diagnosis and does not replace a qualified clinician.
 
+**Highlights:** exact per-feature explanations for every prediction · doctor review workflow ·
+nested cross-validation against baselines · model cards in the app · RBAC, audit log, rate limits ·
+103 automated tests (unit, API, real-browser E2E) in CI · runs on SQLite or MySQL via Docker.
+
 ## Stack
 
 | Layer | Technology |
@@ -19,7 +23,8 @@ PDF reports, role-based dashboards and an AI clinical assistant.
 | AI assistant | Claude via the Anthropic Python SDK (optional), with an offline rule-based fallback |
 | ML | scikit-learn (Decision Trees; Random Forest for symptoms), pandas, NumPy, joblib, Jupyter |
 | Database | SQLite (development) / MySQL (deployment) |
-| Quality | pytest, Vitest, React Testing Library, Ruff, oxlint, Prettier, GitHub Actions |
+| Quality | pytest, Vitest, React Testing Library, Playwright, Ruff, oxlint, Prettier, pip-audit, GitHub Actions |
+| Deployment | Docker Compose: nginx (web) + gunicorn (API) + MySQL 8.4 |
 
 ## Project phases
 
@@ -29,7 +34,7 @@ PDF reports, role-based dashboards and an AI clinical assistant.
 | 2. ML pipeline | 3–5 | Exploratory analysis, preprocessing, Decision Tree tuning, evaluation, model cards, explainer | ✅ Done |
 | 3. Backend API | 6–7 | Auth / RBAC, patients, predictions, reviews, PDF reports, dashboard, audit log | ✅ Done |
 | 4. Frontend & assistant | 8–9 | All pages, dashboards, model performance page, AI clinical assistant | ✅ Done |
-| 5. Test, deploy, document | 10–12 | E2E tests, Docker, deployment, final report, presentation | ⏳ |
+| 5. Test, deploy, document | 10–12 | E2E tests, Docker, deployment, final report, presentation | ✅ Done |
 
 ## Quick start
 
@@ -53,6 +58,22 @@ npm install
 npm run dev
 ```
 
+### Or with Docker (MySQL, production configuration)
+
+```bash
+cp .env.example .env          # fill in the secrets (see the file)
+docker compose up --build     # http://localhost:8080
+```
+
+## Tests
+
+| Suite | Command | Tests |
+|---|---|---:|
+| ML | `pytest ml/tests` | 31 |
+| API | `cd backend && pytest --cov` | 51 |
+| Frontend unit | `cd frontend && npm test` | 10 |
+| End-to-end | `cd frontend && E2E_PYTHON=../.venv/Scripts/python.exe npm run test:e2e` | 11 |
+
 ## Documentation
 
 1. [Requirements specification](docs/01-requirements.md)
@@ -62,3 +83,9 @@ npm run dev
 5. [REST API design](docs/05-api-design.md)
 6. [Model development and evaluation](docs/06-model-evaluation.md)
 7. [Frontend and AI assistant](docs/07-frontend-and-assistant.md)
+8. [Testing (incl. UAT plan)](docs/08-testing.md) · [UAT record sheet](docs/uat-record-sheet.md)
+9. [Deployment](docs/09-deployment.md)
+10. [User manual](docs/10-user-manual.md)
+11. [Viva guide: demo script, slides, Q&A](docs/11-viva-guide.md)
+
+**Final report draft:** [docs/report/MediAssist-Project-Report.md](docs/report/MediAssist-Project-Report.md)

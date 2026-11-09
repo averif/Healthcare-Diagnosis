@@ -33,6 +33,10 @@ class Config:
 
     RATELIMIT_STORAGE_URI = os.getenv("RATELIMIT_STORAGE_URI", "memory://")
 
+    # Behind a reverse proxy (nginx in Docker): trust one X-Forwarded-For hop so rate limits
+    # and the audit log see the real client IP instead of the proxy's
+    BEHIND_PROXY = os.getenv("BEHIND_PROXY", "0") == "1"
+
     # flask-smorest / OpenAPI
     API_TITLE = "MediAssist CDSS API"
     API_VERSION = "0.1.0"
@@ -71,6 +75,18 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
+    PREFERRED_URL_SCHEME = "https"
+
+    @classmethod
+    def validate(cls) -> None:
+        """Refuse to start in production with the built-in development secrets."""
+        for name in ("SECRET_KEY", "JWT_SECRET_KEY"):
+            value = os.getenv(name, "")
+            if len(value) < 32 or "change-me" in value:
+                raise RuntimeError(
+                    f"{name} must be set to a random string of at least 32 characters in "
+                    'production (e.g. python -c "import secrets; print(secrets.token_urlsafe(48))")'
+                )
 
 
 config_by_name = {

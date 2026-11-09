@@ -3,20 +3,31 @@
 import os
 
 from dotenv import load_dotenv
-from flask import Flask
 
-from .config import config_by_name
-from .extensions import cors, db, jwt, limiter, migrate, rest_api
+# Load backend/.env before config.py reads os.environ (matters under gunicorn, where
+# `flask run`'s own .env loading does not happen)
+load_dotenv()
+
+from flask import Flask  # noqa: E402
+
+from .config import config_by_name  # noqa: E402
+from .extensions import cors, db, jwt, limiter, migrate, rest_api  # noqa: E402
 
 
 def create_app(config_name: str | None = None, overrides: dict | None = None) -> Flask:
-    load_dotenv()
     config_name = config_name or os.getenv("FLASK_ENV", "development")
 
     app = Flask(__name__, instance_relative_config=True)
-    app.config.from_object(config_by_name[config_name])
+    config_class = config_by_name[config_name]
+    if hasattr(config_class, "validate"):
+        config_class.validate()
+    app.config.from_object(config_class)
     app.config.update(overrides or {})
     os.makedirs(app.instance_path, exist_ok=True)
+    if app.config["BEHIND_PROXY"]:
+        from werkzeug.middleware.proxy_fix import ProxyFix
+
+        app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
     db.init_app(app)
     migrate.init_app(app, db)

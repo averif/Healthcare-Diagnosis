@@ -141,30 +141,35 @@ def _seed_demo(doctor: User, doctor2: User, password: str) -> None:
     click.echo(f"created {created} demo predictions")
 
 
+def seed_database(demo: bool = False) -> None:
+    """Create demo accounts (idempotent); with demo=True also sample patients and predictions."""
+    password = os.getenv("DEMO_PASSWORD") or "Demo@12345"
+    users = {email: _get_or_create_user(email, n, r, password) for email, n, r in DEMO_USERS}
+    doctor = users["doctor@mediassist.test"]
+    patient_user = users["patient@mediassist.test"]
+    if patient_user.patient_profile is None:
+        db.session.add(
+            Patient(
+                user=patient_user,
+                assigned_doctor_id=doctor.id,
+                date_of_birth=date(1980, 5, 14),
+                sex=Sex.MALE,
+                height_cm=172,
+                weight_kg=81,
+                blood_group="B+",
+            )
+        )
+        db.session.flush()
+    if demo:
+        _seed_demo(doctor, users["doctor2@mediassist.test"], password)
+    db.session.commit()
+
+
 def register_cli(app: Flask) -> None:
     @app.cli.command("seed")
     @click.option("--demo", is_flag=True, help="Also create demo patients and predictions.")
     def seed(demo: bool) -> None:
         """Create demo accounts (idempotent). Use --demo for dashboard sample data."""
-        password = os.getenv("DEMO_PASSWORD", "Demo@12345")
-        users = {email: _get_or_create_user(email, n, r, password) for email, n, r in DEMO_USERS}
-        doctor = users["doctor@mediassist.test"]
-        patient_user = users["patient@mediassist.test"]
-        if patient_user.patient_profile is None:
-            db.session.add(
-                Patient(
-                    user=patient_user,
-                    assigned_doctor_id=doctor.id,
-                    date_of_birth=date(1980, 5, 14),
-                    sex=Sex.MALE,
-                    height_cm=172,
-                    weight_kg=81,
-                    blood_group="B+",
-                )
-            )
-            db.session.flush()
-        if demo:
-            _seed_demo(doctor, users["doctor2@mediassist.test"], password)
-        db.session.commit()
+        seed_database(demo)
         current_app.logger.info("seed complete")
         click.echo("seed complete")

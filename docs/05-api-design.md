@@ -3,7 +3,7 @@
 Base path `/api`. JSON in and out. Authenticated endpoints need `Authorization: Bearer <access token>`.
 Interactive Swagger documentation is generated automatically at **`/api/docs`**.
 
-Status: ✅ implemented (49 automated API tests)
+Status: ✅ implemented (51 automated API tests)
 
 ## Auth
 | Method | Path | Roles | Description | Status |

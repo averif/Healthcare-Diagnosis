@@ -21,5 +21,8 @@ joblib>=1.4
 # Reports
 reportlab>=4.2
 
+# Production WSGI server (used in the Docker image; Windows development uses `flask run`)
+gunicorn>=23; sys_platform != "win32"
+
 # AI clinical assistant (optional at runtime: without an API key the offline rules answer)
 anthropic>=2.0

@@ -1,0 +1,61 @@
+# MediAssist CDSS: full stack with MySQL.
+#
+#   cp .env.example .env      # then set real secrets
+#   docker compose up --build
+#   open http://localhost:8080
+#
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: mediassist
+      MYSQL_USER: mediassist
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?set MYSQL_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?set MYSQL_ROOT_PASSWORD in .env}
+    command: ["--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: mysql+pymysql://mediassist:${MYSQL_PASSWORD}@db:3306/mediassist?charset=utf8mb4
+      SECRET_KEY: ${SECRET_KEY:?set SECRET_KEY in .env}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:?set JWT_SECRET_KEY in .env}
+      CORS_ORIGINS: http://localhost:8080
+      BEHIND_PROXY: "1"
+      ASSISTANT_PROVIDER: ${ASSISTANT_PROVIDER:-auto}
+      ASSISTANT_MODEL: ${ASSISTANT_MODEL:-claude-opus-5-5}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-}
+      SEED_DEMO: ${SEED_DEMO:-0}
+    volumes:
+      - reports:/app/backend/generated_reports
+    expose:
+      - "5000"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+
+volumes:
+  db-data:
+  reports:

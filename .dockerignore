@@ -1,0 +1,20 @@
+# Build context for backend/Dockerfile is the repository root
+.git
+.github
+.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+**/.coverage
+**/htmlcov
+**/.env
+**/node_modules
+frontend
+docs
+ml/notebooks
+ml/reports
+ml/data/processed
+backend/instance
+backend/generated_reports
+backend/tests

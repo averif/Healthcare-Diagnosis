@@ -12,8 +12,8 @@ export default defineConfig({
   },
   server: {
     port: 5173,
-    // Forward API calls to the Flask backend during development
-    proxy: { '/api': 'http://127.0.0.1:5000' },
+    // Forward API calls to the Flask backend (the E2E tests point this at a separate server)
+    proxy: { '/api': process.env.VITE_PROXY_TARGET ?? 'http://127.0.0.1:5000' },
   },
   build: {
     // main bundle is ~200 kB gzipped; Recharts is split into its own lazy chunk
@@ -24,5 +24,6 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    include: ['src/**/*.test.{ts,tsx}'], // e2e/ is run by Playwright
   },
 })
