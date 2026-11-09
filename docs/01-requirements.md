@@ -32,7 +32,7 @@ professionals and does **not** replace them.
 | FR-05 | Diabetes prediction from 8 clinical parameters | Patient, Doctor | Must |
 | FR-06 | Heart disease prediction from 13 clinical parameters | Patient, Doctor | Must |
 | FR-07 | Liver disease prediction from 10 laboratory parameters | Patient, Doctor | Must |
-| FR-08 | Symptom-based prediction from a searchable list of 132 symptoms (top-3 conditions) | Patient, Doctor | Must |
+| FR-08 | Symptom-based prediction from a searchable list of 131 symptoms (top-3 conditions) | Patient, Doctor | Must |
 | FR-09 | Each prediction returns label, probability, risk band (low / moderate / high) and a plain-English explanation of the decision path | Patient, Doctor | Must |
 | FR-10 | Each prediction returns general guidance and red-flag warnings (e.g. "seek emergency care") | Patient, Doctor | Must |
 | FR-11 | Every prediction is saved with its inputs and the model version used | System | Must |

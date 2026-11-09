@@ -1,0 +1,31 @@
+|--- Direct_Bilirubin <= 0.95
+|   |--- Alkaline_Phosphotase <= 209.50
+|   |   |--- Aspartate_Aminotransferase <= 30.50
+|   |   |   |--- Aspartate_Aminotransferase <= 20.50
+|   |   |   |   |--- class: 0
+|   |   |   |--- Aspartate_Aminotransferase >  20.50
+|   |   |   |   |--- class: 0
+|   |   |--- Aspartate_Aminotransferase >  30.50
+|   |   |   |--- Albumin_and_Globulin_Ratio <= 1.13
+|   |   |   |   |--- class: 0
+|   |   |   |--- Albumin_and_Globulin_Ratio >  1.13
+|   |   |   |   |--- class: 0
+|   |--- Alkaline_Phosphotase >  209.50
+|   |   |--- Age <= 27.50
+|   |   |   |--- class: 0
+|   |   |--- Age >  27.50
+|   |   |   |--- Alkaline_Phosphotase <= 275.50
+|   |   |   |   |--- class: 1
+|   |   |   |--- Alkaline_Phosphotase >  275.50
+|   |   |   |   |--- class: 1
+|--- Direct_Bilirubin >  0.95
+|   |--- Age <= 50.50
+|   |   |--- Age <= 34.50
+|   |   |   |--- class: 1
+|   |   |--- Age >  34.50
+|   |   |   |--- Total_Proteins <= 6.15
+|   |   |   |   |--- class: 0
+|   |   |   |--- Total_Proteins >  6.15
+|   |   |   |   |--- class: 1
+|   |--- Age >  50.50
+|   |   |--- class: 1

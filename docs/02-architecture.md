@@ -22,7 +22,8 @@ flowchart TB
 
     subgraph ML["ML layer: scikit-learn"]
         REG["Model registry (loads active models at startup)"]
-        DT["Decision Tree pipelines: diabetes · heart · liver · symptoms"]
+        DT["Decision Tree pipelines: diabetes · heart · liver
+Random Forest: symptoms"]
         XAI["Explainer: decision path → plain-English reasons"]
     end
 
@@ -162,7 +163,7 @@ Healthcare Diagnosis/
 | API | Flask 3 + flask-smorest | Lightweight; generates OpenAPI / Swagger documentation from schemas |
 | ORM / migrations | SQLAlchemy 2 + Alembic | One code base for SQLite and MySQL; versioned schema changes |
 | Auth | Flask-JWT-Extended + Argon2id | Stateless tokens for a SPA; Argon2 is the recommended modern password hash |
-| ML | scikit-learn Decision Tree in a `Pipeline` | Interpretable by design; preprocessing and model saved together |
+| ML | scikit-learn Decision Tree in a `Pipeline` (Random Forest for the symptom module) | Interpretable by design; preprocessing and model saved together. See [06-model-evaluation.md](06-model-evaluation.md) for the symptom-module rationale |
 | Reports | ReportLab | Pure-Python PDF generation that works on Windows without extra system libraries |
 | Testing | pytest, Vitest, React Testing Library, Playwright | Unit, integration and end-to-end coverage |
 | CI | GitHub Actions | Lint, type-check and test on every push |

@@ -16,7 +16,7 @@ PDF reports, role-based dashboards and an AI clinical assistant.
 |---|---|
 | Frontend | React 19, TypeScript, Vite, Tailwind CSS, TanStack Query, React Hook Form + Zod, Recharts |
 | Backend | Python, Flask 3, flask-smorest (OpenAPI), SQLAlchemy 2 + Alembic, Flask-JWT-Extended, Argon2 |
-| ML | scikit-learn (Decision Tree pipelines), pandas, NumPy, joblib |
+| ML | scikit-learn (Decision Trees; Random Forest for symptoms), pandas, NumPy, joblib, Jupyter |
 | Database | SQLite (development) / MySQL (deployment) |
 | Quality | pytest, Vitest, React Testing Library, Ruff, oxlint, Prettier, GitHub Actions |
 
@@ -25,7 +25,7 @@ PDF reports, role-based dashboards and an AI clinical assistant.
 | Phase | Weeks | Scope | Status |
 |---|---|---|---|
 | 1. Foundation & design | 1–2 | Repo, scaffolds, requirements, architecture, database schema, datasets | ✅ Done |
-| 2. ML pipeline | 3–5 | Exploratory analysis, preprocessing, Decision Tree tuning, evaluation, model cards, explainer | ⏳ |
+| 2. ML pipeline | 3–5 | Exploratory analysis, preprocessing, Decision Tree tuning, evaluation, model cards, explainer | ✅ Done |
 | 3. Backend API | 6–7 | Auth / RBAC, patients, predictions, reviews, PDF reports, dashboard, audit log | ⏳ |
 | 4. Frontend & assistant | 8–9 | All pages, dashboards, model performance page, AI clinical assistant | ⏳ |
 | 5. Test, deploy, document | 10–12 | E2E tests, Docker, deployment, final report, presentation | ⏳ |
@@ -36,8 +36,9 @@ PDF reports, role-based dashboards and an AI clinical assistant.
 # 1. Python environment (shared by backend and ml)
 python -m venv .venv
 .venv/Scripts/activate                 # macOS/Linux: source .venv/bin/activate
-pip install -r backend/requirements-dev.txt
+pip install -r backend/requirements-dev.txt -e ml
 python ml/scripts/download_data.py     # fetch and verify datasets
+python -m medml.train                  # optional: retrain models (trained models are committed)
 
 # 2. Backend (http://127.0.0.1:5000, Swagger UI at /api/docs)
 cd backend
@@ -58,3 +59,4 @@ npm run dev
 3. [Database design (ER diagram)](docs/03-database-design.md)
 4. [Datasets and data-quality findings](docs/04-datasets.md)
 5. [REST API design](docs/05-api-design.md)
+6. [Model development and evaluation](docs/06-model-evaluation.md)

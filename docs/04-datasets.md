@@ -8,7 +8,7 @@ which verifies a pinned SHA-256 checksum for each, so every team member trains o
 | Diabetes | Pima Indians Diabetes | 768 | 8 numeric | `Outcome` (0/1) | NIDDK; Smith et al. 1988 |
 | Heart | UCI Heart Disease, Cleveland subset | 303 | 13 (mixed) | `num` 0–4 → binary (0 = none, 1–4 = disease) | Janosi et al. 1988, UCI ML Repository |
 | Liver | Indian Liver Patient Dataset (ILPD) | 583 | 10 (mixed) | `Selector` 1 = disease, 2 = no disease | Ramana & Venkateswarlu 2012, UCI ML Repository |
-| Symptoms | Disease Prediction from Symptoms | 4,920 train + 42 test | 132 binary symptoms | `prognosis` (41 diseases) | Kaggle (GitHub mirror) |
+| Symptoms | Disease Prediction from Symptoms | 4,920 train + 42 test | 131 binary symptoms (132 columns, one a duplicate) | `prognosis` (41 diseases) | Kaggle (GitHub mirror) |
 
 ## 4.1 Data-quality findings (initial profiling)
 
@@ -99,7 +99,7 @@ accuracy in student projects.
 | Albumin/Globulin Ratio | ratio | 0.2–3 |
 
 ### Symptoms
-132 binary symptom flags (e.g. `itching`, `high_fever`, `chest_pain`, `yellowing_of_eyes`). The
+131 binary symptom flags (e.g. `itching`, `high_fever`, `chest_pain`, `yellowing_of_eyes`). The
 UI offers a searchable multi-select with human-readable labels. A set of **red-flag symptoms**
 (e.g. `chest_pain`, `breathlessness`, `coma`, `stomach_bleeding`) always triggers an urgent-care
 warning, regardless of the model's output.

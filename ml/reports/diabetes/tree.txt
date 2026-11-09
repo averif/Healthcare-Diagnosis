@@ -1,0 +1,55 @@
+|--- Glucose <= 127.50
+|   |--- Age <= 27.50
+|   |   |--- BMI <= 31.30
+|   |   |   |--- Pregnancies <= 2.50
+|   |   |   |   |--- SkinThickness <= 15.50
+|   |   |   |   |   |--- class: 0
+|   |   |   |   |--- SkinThickness >  15.50
+|   |   |   |   |   |--- class: 0
+|   |   |   |--- Pregnancies >  2.50
+|   |   |   |   |--- class: 0
+|   |   |--- BMI >  31.30
+|   |   |   |--- DiabetesPedigreeFunction <= 0.48
+|   |   |   |   |--- BloodPressure <= 71.00
+|   |   |   |   |   |--- class: 0
+|   |   |   |   |--- BloodPressure >  71.00
+|   |   |   |   |   |--- class: 0
+|   |   |   |--- DiabetesPedigreeFunction >  0.48
+|   |   |   |   |--- class: 0
+|   |--- Age >  27.50
+|   |   |--- BMI <= 26.80
+|   |   |   |--- class: 0
+|   |   |--- BMI >  26.80
+|   |   |   |--- Insulin <= 87.50
+|   |   |   |   |--- class: 0
+|   |   |   |--- Insulin >  87.50
+|   |   |   |   |--- DiabetesPedigreeFunction <= 0.52
+|   |   |   |   |   |--- class: 0
+|   |   |   |   |--- DiabetesPedigreeFunction >  0.52
+|   |   |   |   |   |--- class: 1
+|--- Glucose >  127.50
+|   |--- Glucose <= 154.50
+|   |   |--- BMI <= 29.95
+|   |   |   |--- BMI <= 27.40
+|   |   |   |   |--- class: 0
+|   |   |   |--- BMI >  27.40
+|   |   |   |   |--- class: 0
+|   |   |--- BMI >  29.95
+|   |   |   |--- SkinThickness <= 31.50
+|   |   |   |   |--- DiabetesPedigreeFunction <= 0.40
+|   |   |   |   |   |--- class: 0
+|   |   |   |   |--- DiabetesPedigreeFunction >  0.40
+|   |   |   |   |   |--- class: 1
+|   |   |   |--- SkinThickness >  31.50
+|   |   |   |   |--- class: 1
+|   |--- Glucose >  154.50
+|   |   |--- Pregnancies <= 6.50
+|   |   |   |--- Glucose <= 166.50
+|   |   |   |   |--- class: 1
+|   |   |   |--- Glucose >  166.50
+|   |   |   |   |--- Insulin <= 139.50
+|   |   |   |   |   |--- class: 1
+|   |   |   |   |--- Insulin >  139.50
+|   |   |   |   |   |--- class: 1
+|   |   |--- Pregnancies >  6.50
+|   |   |   |--- class: 1

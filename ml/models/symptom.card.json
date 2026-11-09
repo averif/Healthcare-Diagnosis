@@ -1,0 +1,1022 @@
+{
+  "disease": "symptom",
+  "title": "Symptom Checker",
+  "version": "1.0.0",
+  "algorithm": "RandomForestClassifier",
+  "deployment_rationale": "A single Decision Tree reached only ~0.6 top-1 accuracy on unseen symptom patterns: with 131 sparse binary symptoms and 5-10 examples per disease it keys on individual symptoms that new patients often do not report. A Random Forest (an ensemble of 200 decision trees) scored ~1.0 and stayed above 0.9 top-1 / 0.99 top-3 with 3 symptoms hidden, so it is deployed for this module. Explanations remain exact (averaged tree paths).",
+  "trained_at": "2026-11-09T14:23:03+00:00",
+  "intended_use": "Preliminary clinical decision support and education. Outputs must be reviewed by a qualified healthcare professional and are not a diagnosis.",
+  "limitations": [
+    "Synthetic-style dataset: only 305 unique symptom patterns for 41 diseases.",
+    "Covers 41 conditions only; anything else will be mapped to the closest of these.",
+    "Not suitable for emergencies; red-flag symptoms always trigger an urgent-care warning."
+  ],
+  "dataset": {
+    "source": "Disease Prediction Using Machine Learning (Kaggle, 132 symptoms / 41 diseases)",
+    "raw_rows": 4962,
+    "rows": 305,
+    "class_balance": {
+      "0": 5,
+      "1": 5,
+      "2": 8,
+      "3": 5,
+      "4": 6,
+      "5": 7,
+      "6": 7,
+      "7": 6,
+      "8": 10,
+      "9": 8,
+      "10": 9,
+      "11": 10,
+      "12": 9,
+      "13": 6,
+      "14": 6,
+      "15": 7,
+      "16": 5,
+      "17": 6,
+      "18": 5,
+      "19": 9,
+      "20": 9,
+      "21": 7,
+      "22": 10,
+      "23": 9,
+      "24": 6,
+      "25": 9,
+      "26": 9,
+      "27": 8,
+      "28": 6,
+      "29": 9,
+      "30": 8,
+      "31": 10,
+      "32": 7,
+      "33": 5,
+      "34": 7,
+      "35": 9,
+      "36": 7,
+      "37": 9,
+      "38": 9,
+      "39": 5,
+      "40": 8
+    },
+    "cleaning": [
+      "Fixed malformed column names (e.g. 'spotting_ urination', 'dischromic _patches') and disease-name typos (e.g. 'Osteoarthristis', 'Peptic ulcer diseae')",
+      "Dropped the empty 'fluid_overload' column (its duplicate 'fluid_overload.1' holds the data)",
+      "Merged the train and test files and removed exact duplicates: 4962 -> 305 unique rows. The original test file was almost entirely copies of training rows, which makes ~100% accuracy meaningless",
+      "Evaluation uses stratified cross-validation on unique rows plus a robustness test that hides some of the patient's symptoms"
+    ],
+    "split": {
+      "train": 244,
+      "test": 61,
+      "stratified": true
+    }
+  },
+  "feature_names": [
+    "itching",
+    "skin_rash",
+    "nodal_skin_eruptions",
+    "continuous_sneezing",
+    "shivering",
+    "chills",
+    "joint_pain",
+    "stomach_pain",
+    "acidity",
+    "ulcers_on_tongue",
+    "muscle_wasting",
+    "vomiting",
+    "burning_micturition",
+    "spotting_urination",
+    "fatigue",
+    "weight_gain",
+    "anxiety",
+    "cold_hands_and_feets",
+    "mood_swings",
+    "weight_loss",
+    "restlessness",
+    "lethargy",
+    "patches_in_throat",
+    "irregular_sugar_level",
+    "cough",
+    "high_fever",
+    "sunken_eyes",
+    "breathlessness",
+    "sweating",
+    "dehydration",
+    "indigestion",
+    "headache",
+    "yellowish_skin",
+    "dark_urine",
+    "nausea",
+    "loss_of_appetite",
+    "pain_behind_the_eyes",
+    "back_pain",
+    "constipation",
+    "abdominal_pain",
+    "diarrhoea",
+    "mild_fever",
+    "yellow_urine",
+    "yellowing_of_eyes",
+    "acute_liver_failure",
+    "swelling_of_stomach",
+    "swelled_lymph_nodes",
+    "malaise",
+    "blurred_and_distorted_vision",
+    "phlegm",
+    "throat_irritation",
+    "redness_of_eyes",
+    "sinus_pressure",
+    "runny_nose",
+    "congestion",
+    "chest_pain",
+    "weakness_in_limbs",
+    "fast_heart_rate",
+    "pain_during_bowel_movements",
+    "pain_in_anal_region",
+    "bloody_stool",
+    "irritation_in_anus",
+    "neck_pain",
+    "dizziness",
+    "cramps",
+    "bruising",
+    "obesity",
+    "swollen_legs",
+    "swollen_blood_vessels",
+    "puffy_face_and_eyes",
+    "enlarged_thyroid",
+    "brittle_nails",
+    "swollen_extremeties",
+    "excessive_hunger",
+    "extra_marital_contacts",
+    "drying_and_tingling_lips",
+    "slurred_speech",
+    "knee_pain",
+    "hip_joint_pain",
+    "muscle_weakness",
+    "stiff_neck",
+    "swelling_joints",
+    "movement_stiffness",
+    "spinning_movements",
+    "loss_of_balance",
+    "unsteadiness",
+    "weakness_of_one_body_side",
+    "loss_of_smell",
+    "bladder_discomfort",
+    "foul_smell_ofurine",
+    "continuous_feel_of_urine",
+    "passage_of_gases",
+    "internal_itching",
+    "toxic_look_(typhos)",
+    "depression",
+    "irritability",
+    "muscle_pain",
+    "altered_sensorium",
+    "red_spots_over_body",
+    "belly_pain",
+    "abnormal_menstruation",
+    "dischromic_patches",
+    "watering_from_eyes",
+    "increased_appetite",
+    "polyuria",
+    "family_history",
+    "mucoid_sputum",
+    "rusty_sputum",
+    "lack_of_concentration",
+    "visual_disturbances",
+    "receiving_blood_transfusion",
+    "receiving_unsterile_injections",
+    "coma",
+    "stomach_bleeding",
+    "distention_of_abdomen",
+    "history_of_alcohol_consumption",
+    "fluid_overload",
+    "blood_in_sputum",
+    "prominent_veins_on_calf",
+    "palpitations",
+    "painful_walking",
+    "pus_filled_pimples",
+    "blackheads",
+    "scurring",
+    "skin_peeling",
+    "silver_like_dusting",
+    "small_dents_in_nails",
+    "inflammatory_nails",
+    "blister",
+    "red_sore_around_nose",
+    "yellow_crust_ooze"
+  ],
+  "features": null,
+  "class_names": [
+    "AIDS",
+    "Acne",
+    "Alcoholic hepatitis",
+    "Allergy",
+    "Arthritis",
+    "Benign paroxysmal positional vertigo",
+    "Bronchial Asthma",
+    "Cervical spondylosis",
+    "Chicken pox",
+    "Chronic cholestasis",
+    "Common Cold",
+    "Dengue",
+    "Diabetes",
+    "Drug Reaction",
+    "Fungal infection",
+    "GERD",
+    "Gastroenteritis",
+    "Haemorrhoids (piles)",
+    "Heart attack",
+    "Hepatitis A",
+    "Hepatitis B",
+    "Hepatitis C",
+    "Hepatitis D",
+    "Hepatitis E",
+    "Hypertension",
+    "Hyperthyroidism",
+    "Hypoglycemia",
+    "Hypothyroidism",
+    "Impetigo",
+    "Jaundice",
+    "Malaria",
+    "Migraine",
+    "Osteoarthritis",
+    "Paralysis (brain haemorrhage)",
+    "Peptic ulcer disease",
+    "Pneumonia",
+    "Psoriasis",
+    "Tuberculosis",
+    "Typhoid",
+    "Urinary tract infection",
+    "Varicose veins"
+  ],
+  "hyperparameters": {
+    "class_weight": null,
+    "max_depth": null,
+    "min_samples_leaf": 1
+  },
+  "model_selection": {
+    "search": "GridSearchCV, stratified k-fold",
+    "scoring": "f1_macro",
+    "candidates_evaluated": 4,
+    "refit_rule": "best mean CV score",
+    "best_cv_score": 0.9957,
+    "selected_cv_score": 0.9957
+  },
+  "tree": {
+    "depth": 40,
+    "leaves": 61.4,
+    "n_trees": 200
+  },
+  "evaluation": {
+    "test": {
+      "accuracy": 1.0,
+      "top3_accuracy": 1.0,
+      "f1_macro": 1.0,
+      "f1": 1.0,
+      "support": 61
+    },
+    "nested_cv": {
+      "accuracy": {
+        "mean": 1.0,
+        "std": 0.0
+      },
+      "f1_macro": {
+        "mean": 1.0,
+        "std": 0.0
+      }
+    }
+  },
+  "comparison": {
+    "decision_tree": {
+      "label": "Decision Tree",
+      "params": {
+        "ccp_alpha": 0.0,
+        "class_weight": null,
+        "criterion": "gini",
+        "max_depth": null,
+        "min_samples_leaf": 2
+      },
+      "test": {
+        "accuracy": 0.6066,
+        "top3_accuracy": 0.623,
+        "f1_macro": 0.5053,
+        "f1": 0.5053,
+        "support": 61
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.6066,
+          "std": 0.0452
+        },
+        "f1_macro": {
+          "mean": 0.5242,
+          "std": 0.0469
+        }
+      }
+    },
+    "logistic_regression": {
+      "label": "Logistic Regression",
+      "params": {
+        "C": 100.0,
+        "class_weight": "balanced"
+      },
+      "test": {
+        "accuracy": 0.9836,
+        "top3_accuracy": 1.0,
+        "f1_macro": 0.9707,
+        "f1": 0.9707,
+        "support": 61
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.9967,
+          "std": 0.0066
+        },
+        "f1_macro": {
+          "mean": 0.9935,
+          "std": 0.013
+        }
+      }
+    },
+    "random_forest": {
+      "label": "Random Forest",
+      "params": {
+        "class_weight": null,
+        "max_depth": null,
+        "min_samples_leaf": 1
+      },
+      "test": {
+        "accuracy": 1.0,
+        "top3_accuracy": 1.0,
+        "f1_macro": 1.0,
+        "f1": 1.0,
+        "support": 61
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "f1_macro": {
+          "mean": 1.0,
+          "std": 0.0
+        }
+      }
+    },
+    "naive_bayes": {
+      "label": "Bernoulli Naive Bayes",
+      "params": {
+        "alpha": 0.01
+      },
+      "test": {
+        "accuracy": 0.9836,
+        "top3_accuracy": 1.0,
+        "f1_macro": 0.987,
+        "f1": 0.987,
+        "support": 61
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "f1_macro": {
+          "mean": 1.0,
+          "std": 0.0
+        }
+      }
+    },
+    "majority_baseline": {
+      "label": "Majority class (baseline)",
+      "params": {},
+      "test": {
+        "accuracy": 0.0328,
+        "top3_accuracy": 0.0984,
+        "f1_macro": 0.0015,
+        "f1": 0.0015,
+        "support": 61
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.0328,
+          "std": 0.0
+        },
+        "f1_macro": {
+          "mean": 0.0015,
+          "std": 0.0
+        }
+      }
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "yellowing_of_eyes",
+      "importance": 0.019
+    },
+    {
+      "feature": "itching",
+      "importance": 0.0188
+    },
+    {
+      "feature": "high_fever",
+      "importance": 0.0185
+    },
+    {
+      "feature": "muscle_pain",
+      "importance": 0.0183
+    },
+    {
+      "feature": "headache",
+      "importance": 0.018
+    },
+    {
+      "feature": "diarrhoea",
+      "importance": 0.0177
+    },
+    {
+      "feature": "family_history",
+      "importance": 0.0177
+    },
+    {
+      "feature": "fatigue",
+      "importance": 0.0173
+    },
+    {
+      "feature": "mild_fever",
+      "importance": 0.0169
+    },
+    {
+      "feature": "nausea",
+      "importance": 0.0162
+    },
+    {
+      "feature": "loss_of_appetite",
+      "importance": 0.0156
+    },
+    {
+      "feature": "vomiting",
+      "importance": 0.0152
+    },
+    {
+      "feature": "weight_loss",
+      "importance": 0.0144
+    },
+    {
+      "feature": "dark_urine",
+      "importance": 0.0143
+    },
+    {
+      "feature": "joint_pain",
+      "importance": 0.0141
+    },
+    {
+      "feature": "chills",
+      "importance": 0.013
+    },
+    {
+      "feature": "sweating",
+      "importance": 0.0128
+    },
+    {
+      "feature": "abdominal_pain",
+      "importance": 0.0128
+    },
+    {
+      "feature": "indigestion",
+      "importance": 0.0128
+    },
+    {
+      "feature": "breathlessness",
+      "importance": 0.0127
+    },
+    {
+      "feature": "acidity",
+      "importance": 0.0127
+    },
+    {
+      "feature": "yellowish_skin",
+      "importance": 0.0125
+    },
+    {
+      "feature": "unsteadiness",
+      "importance": 0.0123
+    },
+    {
+      "feature": "malaise",
+      "importance": 0.0122
+    },
+    {
+      "feature": "chest_pain",
+      "importance": 0.0121
+    },
+    {
+      "feature": "back_pain",
+      "importance": 0.0118
+    },
+    {
+      "feature": "stomach_bleeding",
+      "importance": 0.0116
+    },
+    {
+      "feature": "irritability",
+      "importance": 0.0114
+    },
+    {
+      "feature": "pain_behind_the_eyes",
+      "importance": 0.0112
+    },
+    {
+      "feature": "lethargy",
+      "importance": 0.0109
+    },
+    {
+      "feature": "yellow_crust_ooze",
+      "importance": 0.0103
+    },
+    {
+      "feature": "red_spots_over_body",
+      "importance": 0.0101
+    },
+    {
+      "feature": "rusty_sputum",
+      "importance": 0.01
+    },
+    {
+      "feature": "swelling_joints",
+      "importance": 0.0097
+    },
+    {
+      "feature": "fast_heart_rate",
+      "importance": 0.0095
+    },
+    {
+      "feature": "skin_rash",
+      "importance": 0.0095
+    },
+    {
+      "feature": "coma",
+      "importance": 0.0095
+    },
+    {
+      "feature": "toxic_look_(typhos)",
+      "importance": 0.0095
+    },
+    {
+      "feature": "dischromic_patches",
+      "importance": 0.0094
+    },
+    {
+      "feature": "swelled_lymph_nodes",
+      "importance": 0.0093
+    },
+    {
+      "feature": "cough",
+      "importance": 0.0087
+    },
+    {
+      "feature": "muscle_weakness",
+      "importance": 0.0086
+    },
+    {
+      "feature": "neck_pain",
+      "importance": 0.0084
+    },
+    {
+      "feature": "excessive_hunger",
+      "importance": 0.0082
+    },
+    {
+      "feature": "stiff_neck",
+      "importance": 0.0079
+    },
+    {
+      "feature": "stomach_pain",
+      "importance": 0.0079
+    },
+    {
+      "feature": "pus_filled_pimples",
+      "importance": 0.0078
+    },
+    {
+      "feature": "yellow_urine",
+      "importance": 0.0078
+    },
+    {
+      "feature": "patches_in_throat",
+      "importance": 0.0076
+    },
+    {
+      "feature": "phlegm",
+      "importance": 0.0076
+    },
+    {
+      "feature": "loss_of_balance",
+      "importance": 0.0075
+    },
+    {
+      "feature": "continuous_feel_of_urine",
+      "importance": 0.0075
+    },
+    {
+      "feature": "fluid_overload",
+      "importance": 0.0075
+    },
+    {
+      "feature": "visual_disturbances",
+      "importance": 0.0071
+    },
+    {
+      "feature": "constipation",
+      "importance": 0.0071
+    },
+    {
+      "feature": "polyuria",
+      "importance": 0.0071
+    },
+    {
+      "feature": "mucoid_sputum",
+      "importance": 0.007
+    },
+    {
+      "feature": "swollen_legs",
+      "importance": 0.007
+    },
+    {
+      "feature": "belly_pain",
+      "importance": 0.0069
+    },
+    {
+      "feature": "abnormal_menstruation",
+      "importance": 0.0068
+    },
+    {
+      "feature": "receiving_unsterile_injections",
+      "importance": 0.0067
+    },
+    {
+      "feature": "knee_pain",
+      "importance": 0.0067
+    },
+    {
+      "feature": "slurred_speech",
+      "importance": 0.0065
+    },
+    {
+      "feature": "lack_of_concentration",
+      "importance": 0.0064
+    },
+    {
+      "feature": "blurred_and_distorted_vision",
+      "importance": 0.0063
+    },
+    {
+      "feature": "dizziness",
+      "importance": 0.0063
+    },
+    {
+      "feature": "depression",
+      "importance": 0.0062
+    },
+    {
+      "feature": "cramps",
+      "importance": 0.0062
+    },
+    {
+      "feature": "anxiety",
+      "importance": 0.0061
+    },
+    {
+      "feature": "acute_liver_failure",
+      "importance": 0.0061
+    },
+    {
+      "feature": "ulcers_on_tongue",
+      "importance": 0.0061
+    },
+    {
+      "feature": "spinning_movements",
+      "importance": 0.006
+    },
+    {
+      "feature": "inflammatory_nails",
+      "importance": 0.0059
+    },
+    {
+      "feature": "spotting_urination",
+      "importance": 0.0059
+    },
+    {
+      "feature": "receiving_blood_transfusion",
+      "importance": 0.0059
+    },
+    {
+      "feature": "burning_micturition",
+      "importance": 0.0058
+    },
+    {
+      "feature": "increased_appetite",
+      "importance": 0.0057
+    },
+    {
+      "feature": "palpitations",
+      "importance": 0.0057
+    },
+    {
+      "feature": "blood_in_sputum",
+      "importance": 0.0056
+    },
+    {
+      "feature": "passage_of_gases",
+      "importance": 0.0055
+    },
+    {
+      "feature": "weakness_of_one_body_side",
+      "importance": 0.0055
+    },
+    {
+      "feature": "hip_joint_pain",
+      "importance": 0.0054
+    },
+    {
+      "feature": "small_dents_in_nails",
+      "importance": 0.0054
+    },
+    {
+      "feature": "silver_like_dusting",
+      "importance": 0.0053
+    },
+    {
+      "feature": "skin_peeling",
+      "importance": 0.0052
+    },
+    {
+      "feature": "painful_walking",
+      "importance": 0.0052
+    },
+    {
+      "feature": "internal_itching",
+      "importance": 0.0051
+    },
+    {
+      "feature": "pain_during_bowel_movements",
+      "importance": 0.0051
+    },
+    {
+      "feature": "swelling_of_stomach",
+      "importance": 0.0049
+    },
+    {
+      "feature": "movement_stiffness",
+      "importance": 0.0049
+    },
+    {
+      "feature": "altered_sensorium",
+      "importance": 0.0048
+    },
+    {
+      "feature": "distention_of_abdomen",
+      "importance": 0.0048
+    },
+    {
+      "feature": "history_of_alcohol_consumption",
+      "importance": 0.0047
+    },
+    {
+      "feature": "sunken_eyes",
+      "importance": 0.0046
+    },
+    {
+      "feature": "shivering",
+      "importance": 0.0044
+    },
+    {
+      "feature": "swollen_extremeties",
+      "importance": 0.0044
+    },
+    {
+      "feature": "sinus_pressure",
+      "importance": 0.0043
+    },
+    {
+      "feature": "bloody_stool",
+      "importance": 0.0042
+    },
+    {
+      "feature": "loss_of_smell",
+      "importance": 0.004
+    },
+    {
+      "feature": "restlessness",
+      "importance": 0.004
+    },
+    {
+      "feature": "red_sore_around_nose",
+      "importance": 0.004
+    },
+    {
+      "feature": "nodal_skin_eruptions",
+      "importance": 0.0039
+    },
+    {
+      "feature": "runny_nose",
+      "importance": 0.0038
+    },
+    {
+      "feature": "scurring",
+      "importance": 0.0038
+    },
+    {
+      "feature": "obesity",
+      "importance": 0.0038
+    },
+    {
+      "feature": "pain_in_anal_region",
+      "importance": 0.0038
+    },
+    {
+      "feature": "weakness_in_limbs",
+      "importance": 0.0038
+    },
+    {
+      "feature": "bruising",
+      "importance": 0.0036
+    },
+    {
+      "feature": "continuous_sneezing",
+      "importance": 0.0036
+    },
+    {
+      "feature": "dehydration",
+      "importance": 0.0036
+    },
+    {
+      "feature": "mood_swings",
+      "importance": 0.0035
+    },
+    {
+      "feature": "congestion",
+      "importance": 0.0035
+    },
+    {
+      "feature": "irritation_in_anus",
+      "importance": 0.0035
+    },
+    {
+      "feature": "redness_of_eyes",
+      "importance": 0.0035
+    },
+    {
+      "feature": "blister",
+      "importance": 0.0035
+    },
+    {
+      "feature": "brittle_nails",
+      "importance": 0.0034
+    },
+    {
+      "feature": "enlarged_thyroid",
+      "importance": 0.0034
+    },
+    {
+      "feature": "irregular_sugar_level",
+      "importance": 0.0034
+    },
+    {
+      "feature": "watering_from_eyes",
+      "importance": 0.0033
+    },
+    {
+      "feature": "muscle_wasting",
+      "importance": 0.0033
+    },
+    {
+      "feature": "foul_smell_ofurine",
+      "importance": 0.003
+    },
+    {
+      "feature": "weight_gain",
+      "importance": 0.003
+    },
+    {
+      "feature": "bladder_discomfort",
+      "importance": 0.003
+    },
+    {
+      "feature": "throat_irritation",
+      "importance": 0.0029
+    },
+    {
+      "feature": "swollen_blood_vessels",
+      "importance": 0.0028
+    },
+    {
+      "feature": "extra_marital_contacts",
+      "importance": 0.0026
+    },
+    {
+      "feature": "blackheads",
+      "importance": 0.0025
+    },
+    {
+      "feature": "prominent_veins_on_calf",
+      "importance": 0.0022
+    },
+    {
+      "feature": "drying_and_tingling_lips",
+      "importance": 0.0019
+    },
+    {
+      "feature": "puffy_face_and_eyes",
+      "importance": 0.0017
+    },
+    {
+      "feature": "cold_hands_and_feets",
+      "importance": 0.001
+    }
+  ],
+  "risk_bands": null,
+  "robustness": {
+    "decision_tree": {
+      "label": "Decision Tree",
+      "hidden_symptoms": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "top1": [
+        0.6066,
+        0.539,
+        0.4492,
+        0.4046
+      ],
+      "top3": [
+        0.6131,
+        0.56,
+        0.4918,
+        0.442
+      ]
+    },
+    "logistic_regression": {
+      "label": "Logistic Regression",
+      "hidden_symptoms": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "top1": [
+        0.9967,
+        0.9803,
+        0.9462,
+        0.9075
+      ],
+      "top3": [
+        0.9967,
+        0.9948,
+        0.9908,
+        0.981
+      ]
+    },
+    "random_forest": {
+      "label": "Random Forest",
+      "hidden_symptoms": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "top1": [
+        1.0,
+        0.9974,
+        0.9731,
+        0.9351
+      ],
+      "top3": [
+        1.0,
+        0.9993,
+        1.0,
+        0.9941
+      ]
+    },
+    "naive_bayes": {
+      "label": "Bernoulli Naive Bayes",
+      "hidden_symptoms": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "top1": [
+        1.0,
+        0.9961,
+        0.9685,
+        0.9003
+      ],
+      "top3": [
+        1.0,
+        1.0,
+        1.0,
+        0.9921
+      ]
+    }
+  }
+}

@@ -1,0 +1,937 @@
+{
+  "disease": "diabetes",
+  "title": "Diabetes",
+  "version": "1.0.0",
+  "algorithm": "DecisionTreeClassifier",
+  "deployment_rationale": null,
+  "trained_at": "2026-11-09T14:17:45+00:00",
+  "intended_use": "Preliminary clinical decision support and education. Outputs must be reviewed by a qualified healthcare professional and are not a diagnosis.",
+  "limitations": [
+    "Trained only on adult women of Pima Indian heritage (age 21+); may not generalise to men, children or other populations.",
+    "Insulin and skin thickness were missing for many records and were imputed."
+  ],
+  "dataset": {
+    "source": "Pima Indians Diabetes Database (NIDDK; Smith et al., 1988)",
+    "raw_rows": 768,
+    "rows": 768,
+    "class_balance": {
+      "Non-diabetic": 500,
+      "Diabetic": 268
+    },
+    "cleaning": [
+      "Glucose: 5 zero values (0.7%) treated as missing",
+      "BloodPressure: 35 zero values (4.6%) treated as missing",
+      "SkinThickness: 227 zero values (29.6%) treated as missing",
+      "Insulin: 374 zero values (48.7%) treated as missing",
+      "BMI: 11 zero values (1.4%) treated as missing",
+      "Missing values are imputed with the training-fold median inside the pipeline"
+    ],
+    "split": {
+      "train": 614,
+      "test": 154,
+      "stratified": true
+    }
+  },
+  "feature_names": [
+    "Pregnancies",
+    "Glucose",
+    "BloodPressure",
+    "SkinThickness",
+    "Insulin",
+    "BMI",
+    "DiabetesPedigreeFunction",
+    "Age"
+  ],
+  "features": [
+    {
+      "name": "Pregnancies",
+      "label": "Number of pregnancies",
+      "kind": "numeric",
+      "unit": "",
+      "min": 0,
+      "max": 20,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Glucose",
+      "label": "Plasma glucose (2-h OGTT)",
+      "kind": "numeric",
+      "unit": "mg/dL",
+      "min": 40,
+      "max": 300,
+      "choices": {},
+      "required": true,
+      "help": "Glucose concentration 2 hours after an oral glucose tolerance test"
+    },
+    {
+      "name": "BloodPressure",
+      "label": "Diastolic blood pressure",
+      "kind": "numeric",
+      "unit": "mm Hg",
+      "min": 30,
+      "max": 140,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "SkinThickness",
+      "label": "Triceps skin-fold thickness",
+      "kind": "numeric",
+      "unit": "mm",
+      "min": 5,
+      "max": 100,
+      "choices": {},
+      "required": false,
+      "help": ""
+    },
+    {
+      "name": "Insulin",
+      "label": "2-hour serum insulin",
+      "kind": "numeric",
+      "unit": "\u00b5U/mL",
+      "min": 10,
+      "max": 900,
+      "choices": {},
+      "required": false,
+      "help": ""
+    },
+    {
+      "name": "BMI",
+      "label": "Body mass index",
+      "kind": "numeric",
+      "unit": "kg/m\u00b2",
+      "min": 10,
+      "max": 70,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "DiabetesPedigreeFunction",
+      "label": "Diabetes pedigree function",
+      "kind": "numeric",
+      "unit": "",
+      "min": 0.05,
+      "max": 2.5,
+      "choices": {},
+      "required": true,
+      "help": "Score summarising diabetes history in relatives (higher = stronger family history)"
+    },
+    {
+      "name": "Age",
+      "label": "Age",
+      "kind": "numeric",
+      "unit": "years",
+      "min": 18,
+      "max": 100,
+      "choices": {},
+      "required": true,
+      "help": ""
+    }
+  ],
+  "class_names": [
+    "Non-diabetic",
+    "Diabetic"
+  ],
+  "hyperparameters": {
+    "ccp_alpha": 0.0,
+    "class_weight": "balanced",
+    "criterion": "gini",
+    "max_depth": 5,
+    "min_samples_leaf": 20
+  },
+  "model_selection": {
+    "search": "GridSearchCV, stratified k-fold",
+    "scoring": "balanced_accuracy",
+    "candidates_evaluated": 336,
+    "refit_rule": "one-standard-error (simplest tree within 1 SE of the best CV score)",
+    "best_cv_score": 0.7514,
+    "selected_cv_score": 0.7411
+  },
+  "tree": {
+    "depth": 5,
+    "leaves": 19.0,
+    "n_trees": 1
+  },
+  "evaluation": {
+    "test": {
+      "accuracy": 0.7468,
+      "balanced_accuracy": 0.7198,
+      "precision": 0.6415,
+      "recall": 0.6296,
+      "specificity": 0.81,
+      "f1": 0.6355,
+      "roc_auc": 0.7991,
+      "confusion_matrix": [
+        [
+          81,
+          19
+        ],
+        [
+          20,
+          34
+        ]
+      ],
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.04,
+          0.05,
+          0.06,
+          0.14,
+          0.17,
+          0.19,
+          0.19,
+          0.21,
+          0.36,
+          0.37,
+          0.43,
+          0.55,
+          0.62,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.0926,
+          0.1481,
+          0.2593,
+          0.4259,
+          0.537,
+          0.5556,
+          0.6296,
+          0.6852,
+          0.8519,
+          0.8704,
+          0.9074,
+          0.9444,
+          0.963,
+          1.0
+        ],
+        "thresholds": [
+          1.0,
+          0.983,
+          0.9492,
+          0.882,
+          0.86,
+          0.789,
+          0.7687,
+          0.7606,
+          0.4974,
+          0.4916,
+          0.4278,
+          0.3671,
+          0.2279,
+          0.1452,
+          0.0
+        ]
+      },
+      "support": {
+        "negative": 100,
+        "positive": 54
+      }
+    },
+    "nested_cv": {
+      "accuracy": {
+        "mean": 0.7258,
+        "std": 0.0557
+      },
+      "balanced_accuracy": {
+        "mean": 0.7381,
+        "std": 0.0417
+      },
+      "precision": {
+        "mean": 0.5927,
+        "std": 0.0734
+      },
+      "recall": {
+        "mean": 0.7782,
+        "std": 0.0879
+      },
+      "f1": {
+        "mean": 0.6658,
+        "std": 0.0455
+      },
+      "roc_auc": {
+        "mean": 0.8065,
+        "std": 0.0428
+      }
+    }
+  },
+  "comparison": {
+    "decision_tree": {
+      "label": "Decision Tree",
+      "params": {
+        "ccp_alpha": 0.0,
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": 5,
+        "min_samples_leaf": 20
+      },
+      "test": {
+        "accuracy": 0.7468,
+        "balanced_accuracy": 0.7198,
+        "precision": 0.6415,
+        "recall": 0.6296,
+        "specificity": 0.81,
+        "f1": 0.6355,
+        "roc_auc": 0.7991,
+        "confusion_matrix": [
+          [
+            81,
+            19
+          ],
+          [
+            20,
+            34
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            0.04,
+            0.05,
+            0.06,
+            0.14,
+            0.17,
+            0.19,
+            0.19,
+            0.21,
+            0.36,
+            0.37,
+            0.43,
+            0.55,
+            0.62,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            0.0926,
+            0.1481,
+            0.2593,
+            0.4259,
+            0.537,
+            0.5556,
+            0.6296,
+            0.6852,
+            0.8519,
+            0.8704,
+            0.9074,
+            0.9444,
+            0.963,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.983,
+            0.9492,
+            0.882,
+            0.86,
+            0.789,
+            0.7687,
+            0.7606,
+            0.4974,
+            0.4916,
+            0.4278,
+            0.3671,
+            0.2279,
+            0.1452,
+            0.0
+          ]
+        },
+        "support": {
+          "negative": 100,
+          "positive": 54
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.7258,
+          "std": 0.0557
+        },
+        "balanced_accuracy": {
+          "mean": 0.7381,
+          "std": 0.0417
+        },
+        "precision": {
+          "mean": 0.5927,
+          "std": 0.0734
+        },
+        "recall": {
+          "mean": 0.7782,
+          "std": 0.0879
+        },
+        "f1": {
+          "mean": 0.6658,
+          "std": 0.0455
+        },
+        "roc_auc": {
+          "mean": 0.8065,
+          "std": 0.0428
+        }
+      }
+    },
+    "logistic_regression": {
+      "label": "Logistic Regression",
+      "params": {
+        "C": 0.1,
+        "class_weight": "balanced"
+      },
+      "test": {
+        "accuracy": 0.7078,
+        "balanced_accuracy": 0.6983,
+        "precision": 0.5714,
+        "recall": 0.6667,
+        "specificity": 0.73,
+        "f1": 0.6154,
+        "roc_auc": 0.8104,
+        "confusion_matrix": [
+          [
+            73,
+            27
+          ],
+          [
+            18,
+            36
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            0.0,
+            0.0,
+            0.03,
+            0.03,
+            0.04,
+            0.04,
+            0.05,
+            0.05,
+            0.06,
+            0.06,
+            0.07,
+            0.07,
+            0.09,
+            0.09,
+            0.1,
+            0.1,
+            0.11,
+            0.11,
+            0.18,
+            0.18,
+            0.2,
+            0.2,
+            0.21,
+            0.21,
+            0.22,
+            0.22,
+            0.27,
+            0.27,
+            0.28,
+            0.28,
+            0.3,
+            0.3,
+            0.31,
+            0.31,
+            0.34,
+            0.34,
+            0.35,
+            0.35,
+            0.36,
+            0.36,
+            0.42,
+            0.42,
+            0.45,
+            0.45,
+            0.49,
+            0.49,
+            0.84,
+            0.84,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            0.0185,
+            0.0926,
+            0.0926,
+            0.1111,
+            0.1111,
+            0.1667,
+            0.1667,
+            0.3148,
+            0.3148,
+            0.3333,
+            0.3333,
+            0.3704,
+            0.3704,
+            0.4074,
+            0.4074,
+            0.463,
+            0.463,
+            0.4815,
+            0.4815,
+            0.5,
+            0.5,
+            0.5556,
+            0.5556,
+            0.5926,
+            0.5926,
+            0.6667,
+            0.6667,
+            0.7037,
+            0.7037,
+            0.7407,
+            0.7407,
+            0.7778,
+            0.7778,
+            0.8148,
+            0.8148,
+            0.8519,
+            0.8519,
+            0.8704,
+            0.8704,
+            0.8889,
+            0.8889,
+            0.9259,
+            0.9259,
+            0.9444,
+            0.9444,
+            0.9815,
+            0.9815,
+            1.0,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.9952,
+            0.94,
+            0.9172,
+            0.9168,
+            0.9115,
+            0.9001,
+            0.8871,
+            0.8448,
+            0.8433,
+            0.8394,
+            0.8314,
+            0.8103,
+            0.8074,
+            0.7851,
+            0.7801,
+            0.7591,
+            0.7421,
+            0.7336,
+            0.663,
+            0.653,
+            0.6431,
+            0.6088,
+            0.6079,
+            0.6012,
+            0.5979,
+            0.5433,
+            0.5079,
+            0.4962,
+            0.4941,
+            0.4895,
+            0.473,
+            0.4611,
+            0.4609,
+            0.4484,
+            0.4045,
+            0.3906,
+            0.3881,
+            0.3852,
+            0.376,
+            0.3698,
+            0.2931,
+            0.2884,
+            0.2865,
+            0.2695,
+            0.2408,
+            0.2221,
+            0.1028,
+            0.0949,
+            0.029
+          ]
+        },
+        "support": {
+          "negative": 100,
+          "positive": 54
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.7526,
+          "std": 0.0369
+        },
+        "balanced_accuracy": {
+          "mean": 0.7451,
+          "std": 0.0309
+        },
+        "precision": {
+          "mean": 0.6326,
+          "std": 0.0595
+        },
+        "recall": {
+          "mean": 0.7202,
+          "std": 0.0482
+        },
+        "f1": {
+          "mean": 0.671,
+          "std": 0.0373
+        },
+        "roc_auc": {
+          "mean": 0.8353,
+          "std": 0.0247
+        }
+      }
+    },
+    "random_forest": {
+      "label": "Random Forest",
+      "params": {
+        "class_weight": "balanced",
+        "max_depth": 6,
+        "min_samples_leaf": 5
+      },
+      "test": {
+        "accuracy": 0.7532,
+        "balanced_accuracy": 0.7589,
+        "precision": 0.6176,
+        "recall": 0.7778,
+        "specificity": 0.74,
+        "f1": 0.6885,
+        "roc_auc": 0.8176,
+        "confusion_matrix": [
+          [
+            74,
+            26
+          ],
+          [
+            12,
+            42
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            0.0,
+            0.0,
+            0.02,
+            0.02,
+            0.04,
+            0.04,
+            0.05,
+            0.05,
+            0.07,
+            0.07,
+            0.09,
+            0.09,
+            0.1,
+            0.1,
+            0.12,
+            0.12,
+            0.14,
+            0.14,
+            0.15,
+            0.15,
+            0.16,
+            0.16,
+            0.18,
+            0.18,
+            0.19,
+            0.19,
+            0.2,
+            0.2,
+            0.22,
+            0.22,
+            0.25,
+            0.25,
+            0.26,
+            0.26,
+            0.3,
+            0.3,
+            0.34,
+            0.34,
+            0.35,
+            0.35,
+            0.36,
+            0.36,
+            0.38,
+            0.38,
+            0.44,
+            0.44,
+            0.46,
+            0.46,
+            0.5,
+            0.5,
+            0.51,
+            0.51,
+            0.69,
+            0.69,
+            0.81,
+            0.81,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            0.0185,
+            0.0926,
+            0.0926,
+            0.1481,
+            0.1481,
+            0.2963,
+            0.2963,
+            0.3148,
+            0.3148,
+            0.3519,
+            0.3519,
+            0.4074,
+            0.4074,
+            0.4444,
+            0.4444,
+            0.4815,
+            0.4815,
+            0.5,
+            0.5,
+            0.537,
+            0.537,
+            0.5926,
+            0.5926,
+            0.6296,
+            0.6296,
+            0.6481,
+            0.6481,
+            0.6667,
+            0.6667,
+            0.7222,
+            0.7222,
+            0.7593,
+            0.7593,
+            0.7778,
+            0.7778,
+            0.7963,
+            0.7963,
+            0.8333,
+            0.8333,
+            0.8519,
+            0.8519,
+            0.8704,
+            0.8704,
+            0.8889,
+            0.8889,
+            0.9074,
+            0.9074,
+            0.9259,
+            0.9259,
+            0.9444,
+            0.9444,
+            0.963,
+            0.963,
+            0.9815,
+            0.9815,
+            1.0,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.8808,
+            0.8562,
+            0.8465,
+            0.8297,
+            0.827,
+            0.7824,
+            0.7738,
+            0.7693,
+            0.7557,
+            0.748,
+            0.7343,
+            0.7251,
+            0.7215,
+            0.7202,
+            0.6983,
+            0.6772,
+            0.6504,
+            0.6471,
+            0.6444,
+            0.6389,
+            0.6308,
+            0.6164,
+            0.5983,
+            0.5925,
+            0.5905,
+            0.5842,
+            0.5817,
+            0.5785,
+            0.5727,
+            0.564,
+            0.5235,
+            0.5168,
+            0.5133,
+            0.511,
+            0.4847,
+            0.4796,
+            0.4543,
+            0.4259,
+            0.4233,
+            0.4188,
+            0.4161,
+            0.4131,
+            0.3792,
+            0.3697,
+            0.2962,
+            0.2926,
+            0.2865,
+            0.2838,
+            0.2636,
+            0.26,
+            0.2497,
+            0.2451,
+            0.1347,
+            0.134,
+            0.0914,
+            0.0848,
+            0.0274
+          ]
+        },
+        "support": {
+          "negative": 100,
+          "positive": 54
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.7623,
+          "std": 0.0449
+        },
+        "balanced_accuracy": {
+          "mean": 0.7656,
+          "std": 0.0374
+        },
+        "precision": {
+          "mean": 0.6351,
+          "std": 0.0618
+        },
+        "recall": {
+          "mean": 0.7763,
+          "std": 0.0343
+        },
+        "f1": {
+          "mean": 0.6968,
+          "std": 0.0422
+        },
+        "roc_auc": {
+          "mean": 0.8374,
+          "std": 0.0317
+        }
+      }
+    },
+    "majority_baseline": {
+      "label": "Majority class (baseline)",
+      "params": {},
+      "test": {
+        "accuracy": 0.6494,
+        "balanced_accuracy": 0.5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "f1": 0.0,
+        "roc_auc": 0.5,
+        "confusion_matrix": [
+          [
+            100,
+            0
+          ],
+          [
+            54,
+            0
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.3485
+          ]
+        },
+        "support": {
+          "negative": 100,
+          "positive": 54
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.651,
+          "std": 0.0021
+        },
+        "balanced_accuracy": {
+          "mean": 0.5,
+          "std": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "roc_auc": {
+          "mean": 0.5,
+          "std": 0.0
+        }
+      }
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "Glucose",
+      "importance": 0.5151
+    },
+    {
+      "feature": "BMI",
+      "importance": 0.1883
+    },
+    {
+      "feature": "Age",
+      "importance": 0.1204
+    },
+    {
+      "feature": "Insulin",
+      "importance": 0.0723
+    },
+    {
+      "feature": "DiabetesPedigreeFunction",
+      "importance": 0.0673
+    },
+    {
+      "feature": "SkinThickness",
+      "importance": 0.0149
+    },
+    {
+      "feature": "BloodPressure",
+      "importance": 0.0118
+    },
+    {
+      "feature": "Pregnancies",
+      "importance": 0.0099
+    }
+  ],
+  "risk_bands": {
+    "low": 0.35,
+    "moderate": 0.65,
+    "high": 1.01
+  },
+  "robustness": null
+}

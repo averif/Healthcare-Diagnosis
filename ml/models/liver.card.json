@@ -1,0 +1,850 @@
+{
+  "disease": "liver",
+  "title": "Liver Disease",
+  "version": "1.0.0",
+  "algorithm": "DecisionTreeClassifier",
+  "deployment_rationale": null,
+  "trained_at": "2026-11-09T14:22:38+00:00",
+  "intended_use": "Preliminary clinical decision support and education. Outputs must be reviewed by a qualified healthcare professional and are not a diagnosis.",
+  "limitations": [
+    "Patients from one region of India; 76% male.",
+    "The 'healthy' class are non-liver patients from the same hospital, not the general public."
+  ],
+  "dataset": {
+    "source": "Indian Liver Patient Dataset, ILPD (Ramana & Venkateswarlu, 2012)",
+    "raw_rows": 583,
+    "rows": 570,
+    "class_balance": {
+      "No liver disease": 164,
+      "Liver disease": 406
+    },
+    "cleaning": [
+      "Removed 13 exact duplicate rows so no patient appears in both train and test",
+      "Gender encoded as 0 = female, 1 = male",
+      "Albumin_and_Globulin_Ratio: 4 missing values imputed (median)",
+      "Target remapped from (1 = disease, 2 = healthy) to (1 = disease, 0 = healthy)"
+    ],
+    "split": {
+      "train": 456,
+      "test": 114,
+      "stratified": true
+    }
+  },
+  "feature_names": [
+    "Age",
+    "Gender",
+    "Total_Bilirubin",
+    "Direct_Bilirubin",
+    "Alkaline_Phosphotase",
+    "Alamine_Aminotransferase",
+    "Aspartate_Aminotransferase",
+    "Total_Proteins",
+    "Albumin",
+    "Albumin_and_Globulin_Ratio"
+  ],
+  "features": [
+    {
+      "name": "Age",
+      "label": "Age",
+      "kind": "numeric",
+      "unit": "years",
+      "min": 4,
+      "max": 90,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Gender",
+      "label": "Sex",
+      "kind": "binary",
+      "unit": "",
+      "min": null,
+      "max": null,
+      "choices": {
+        "0": "female",
+        "1": "male"
+      },
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Total_Bilirubin",
+      "label": "Total bilirubin",
+      "kind": "numeric",
+      "unit": "mg/dL",
+      "min": 0.1,
+      "max": 80,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Direct_Bilirubin",
+      "label": "Direct bilirubin",
+      "kind": "numeric",
+      "unit": "mg/dL",
+      "min": 0.1,
+      "max": 20,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Alkaline_Phosphotase",
+      "label": "Alkaline phosphatase (ALP)",
+      "kind": "numeric",
+      "unit": "IU/L",
+      "min": 50,
+      "max": 2500,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Alamine_Aminotransferase",
+      "label": "Alanine aminotransferase (ALT)",
+      "kind": "numeric",
+      "unit": "IU/L",
+      "min": 5,
+      "max": 2000,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Aspartate_Aminotransferase",
+      "label": "Aspartate aminotransferase (AST)",
+      "kind": "numeric",
+      "unit": "IU/L",
+      "min": 5,
+      "max": 5000,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Total_Proteins",
+      "label": "Total proteins",
+      "kind": "numeric",
+      "unit": "g/dL",
+      "min": 2,
+      "max": 10,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Albumin",
+      "label": "Albumin",
+      "kind": "numeric",
+      "unit": "g/dL",
+      "min": 0.5,
+      "max": 6,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "Albumin_and_Globulin_Ratio",
+      "label": "Albumin/globulin ratio",
+      "kind": "numeric",
+      "unit": "",
+      "min": 0.2,
+      "max": 3,
+      "choices": {},
+      "required": false,
+      "help": ""
+    }
+  ],
+  "class_names": [
+    "No liver disease",
+    "Liver disease"
+  ],
+  "hyperparameters": {
+    "ccp_alpha": 0.0,
+    "class_weight": "balanced",
+    "criterion": "entropy",
+    "max_depth": 4,
+    "min_samples_leaf": 20
+  },
+  "model_selection": {
+    "search": "GridSearchCV, stratified k-fold",
+    "scoring": "balanced_accuracy",
+    "candidates_evaluated": 336,
+    "refit_rule": "one-standard-error (simplest tree within 1 SE of the best CV score)",
+    "best_cv_score": 0.6756,
+    "selected_cv_score": 0.6756
+  },
+  "tree": {
+    "depth": 4,
+    "leaves": 11.0,
+    "n_trees": 1
+  },
+  "evaluation": {
+    "test": {
+      "accuracy": 0.6842,
+      "balanced_accuracy": 0.7059,
+      "precision": 0.8689,
+      "recall": 0.6543,
+      "specificity": 0.7576,
+      "f1": 0.7465,
+      "roc_auc": 0.74,
+      "confusion_matrix": [
+        [
+          25,
+          8
+        ],
+        [
+          28,
+          53
+        ]
+      ],
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0909,
+          0.0909,
+          0.1515,
+          0.2424,
+          0.4242,
+          0.4242,
+          0.6667,
+          0.7273,
+          0.8182,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.2716,
+          0.3951,
+          0.5926,
+          0.6543,
+          0.7284,
+          0.8025,
+          0.8642,
+          0.9012,
+          0.9383,
+          1.0
+        ],
+        "thresholds": [
+          1.0,
+          1.0,
+          0.8495,
+          0.8012,
+          0.5257,
+          0.4963,
+          0.4847,
+          0.3576,
+          0.3174,
+          0.2467,
+          0.2118
+        ]
+      },
+      "support": {
+        "negative": 33,
+        "positive": 81
+      }
+    },
+    "nested_cv": {
+      "accuracy": {
+        "mean": 0.6184,
+        "std": 0.0463
+      },
+      "balanced_accuracy": {
+        "mean": 0.6685,
+        "std": 0.0142
+      },
+      "precision": {
+        "mean": 0.8713,
+        "std": 0.0326
+      },
+      "recall": {
+        "mean": 0.5505,
+        "std": 0.1005
+      },
+      "f1": {
+        "mean": 0.6669,
+        "std": 0.0705
+      },
+      "roc_auc": {
+        "mean": 0.6923,
+        "std": 0.0214
+      }
+    }
+  },
+  "comparison": {
+    "decision_tree": {
+      "label": "Decision Tree",
+      "params": {
+        "ccp_alpha": 0.0,
+        "class_weight": "balanced",
+        "criterion": "entropy",
+        "max_depth": 4,
+        "min_samples_leaf": 20
+      },
+      "test": {
+        "accuracy": 0.6842,
+        "balanced_accuracy": 0.7059,
+        "precision": 0.8689,
+        "recall": 0.6543,
+        "specificity": 0.7576,
+        "f1": 0.7465,
+        "roc_auc": 0.74,
+        "confusion_matrix": [
+          [
+            25,
+            8
+          ],
+          [
+            28,
+            53
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            0.0909,
+            0.0909,
+            0.1515,
+            0.2424,
+            0.4242,
+            0.4242,
+            0.6667,
+            0.7273,
+            0.8182,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            0.2716,
+            0.3951,
+            0.5926,
+            0.6543,
+            0.7284,
+            0.8025,
+            0.8642,
+            0.9012,
+            0.9383,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            1.0,
+            0.8495,
+            0.8012,
+            0.5257,
+            0.4963,
+            0.4847,
+            0.3576,
+            0.3174,
+            0.2467,
+            0.2118
+          ]
+        },
+        "support": {
+          "negative": 33,
+          "positive": 81
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.6184,
+          "std": 0.0463
+        },
+        "balanced_accuracy": {
+          "mean": 0.6685,
+          "std": 0.0142
+        },
+        "precision": {
+          "mean": 0.8713,
+          "std": 0.0326
+        },
+        "recall": {
+          "mean": 0.5505,
+          "std": 0.1005
+        },
+        "f1": {
+          "mean": 0.6669,
+          "std": 0.0705
+        },
+        "roc_auc": {
+          "mean": 0.6923,
+          "std": 0.0214
+        }
+      }
+    },
+    "logistic_regression": {
+      "label": "Logistic Regression",
+      "params": {
+        "C": 1.0,
+        "class_weight": "balanced"
+      },
+      "test": {
+        "accuracy": 0.7281,
+        "balanced_accuracy": 0.7637,
+        "precision": 0.9167,
+        "recall": 0.679,
+        "specificity": 0.8485,
+        "f1": 0.7801,
+        "roc_auc": 0.8006,
+        "confusion_matrix": [
+          [
+            28,
+            5
+          ],
+          [
+            26,
+            55
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            0.0,
+            0.0,
+            0.0303,
+            0.0303,
+            0.0606,
+            0.0606,
+            0.0909,
+            0.0909,
+            0.1212,
+            0.1212,
+            0.2121,
+            0.2121,
+            0.2424,
+            0.2424,
+            0.3939,
+            0.3939,
+            0.5152,
+            0.5152,
+            0.5455,
+            0.5455,
+            0.6061,
+            0.6061,
+            0.6364,
+            0.6364,
+            0.7576,
+            0.7576,
+            0.8182,
+            0.8182,
+            0.9091,
+            0.9091,
+            0.9394,
+            0.9394,
+            0.9697,
+            0.9697,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            0.0123,
+            0.5679,
+            0.5679,
+            0.5926,
+            0.5926,
+            0.6296,
+            0.6296,
+            0.6543,
+            0.6543,
+            0.679,
+            0.679,
+            0.6914,
+            0.6914,
+            0.7037,
+            0.7037,
+            0.7901,
+            0.7901,
+            0.8148,
+            0.8148,
+            0.8272,
+            0.8272,
+            0.8889,
+            0.8889,
+            0.9012,
+            0.9012,
+            0.9259,
+            0.9259,
+            0.9383,
+            0.9383,
+            0.9506,
+            0.9506,
+            0.9877,
+            0.9877,
+            1.0,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            1.0,
+            0.6234,
+            0.6191,
+            0.6144,
+            0.6098,
+            0.5454,
+            0.5344,
+            0.5283,
+            0.5154,
+            0.512,
+            0.4915,
+            0.4877,
+            0.4749,
+            0.4735,
+            0.4434,
+            0.4005,
+            0.3892,
+            0.3841,
+            0.3738,
+            0.3662,
+            0.3529,
+            0.3198,
+            0.3193,
+            0.3181,
+            0.2983,
+            0.284,
+            0.2836,
+            0.2738,
+            0.255,
+            0.2493,
+            0.2311,
+            0.2066,
+            0.2033,
+            0.1952,
+            0.1774
+          ]
+        },
+        "support": {
+          "negative": 33,
+          "positive": 81
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.6333,
+          "std": 0.0409
+        },
+        "balanced_accuracy": {
+          "mean": 0.6928,
+          "std": 0.0346
+        },
+        "precision": {
+          "mean": 0.8914,
+          "std": 0.0283
+        },
+        "recall": {
+          "mean": 0.5532,
+          "std": 0.0556
+        },
+        "f1": {
+          "mean": 0.681,
+          "std": 0.0455
+        },
+        "roc_auc": {
+          "mean": 0.752,
+          "std": 0.0235
+        }
+      }
+    },
+    "random_forest": {
+      "label": "Random Forest",
+      "params": {
+        "class_weight": "balanced",
+        "max_depth": 6,
+        "min_samples_leaf": 1
+      },
+      "test": {
+        "accuracy": 0.7193,
+        "balanced_accuracy": 0.7306,
+        "precision": 0.8769,
+        "recall": 0.7037,
+        "specificity": 0.7576,
+        "f1": 0.7808,
+        "roc_auc": 0.7894,
+        "confusion_matrix": [
+          [
+            25,
+            8
+          ],
+          [
+            24,
+            57
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            0.0,
+            0.0,
+            0.0303,
+            0.0303,
+            0.0909,
+            0.0909,
+            0.1212,
+            0.1212,
+            0.1515,
+            0.1515,
+            0.2121,
+            0.2121,
+            0.2424,
+            0.2424,
+            0.2727,
+            0.2727,
+            0.303,
+            0.303,
+            0.3333,
+            0.3333,
+            0.5152,
+            0.5152,
+            0.5455,
+            0.5455,
+            0.6061,
+            0.6061,
+            0.6364,
+            0.6364,
+            0.6667,
+            0.6667,
+            0.7273,
+            0.7273,
+            0.7576,
+            0.7576,
+            0.8788,
+            0.8788,
+            0.9091,
+            0.9091,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            0.0123,
+            0.4074,
+            0.4074,
+            0.4938,
+            0.4938,
+            0.5062,
+            0.5062,
+            0.6296,
+            0.6296,
+            0.679,
+            0.679,
+            0.6914,
+            0.6914,
+            0.7037,
+            0.7037,
+            0.7284,
+            0.7284,
+            0.7407,
+            0.7407,
+            0.7531,
+            0.7531,
+            0.7901,
+            0.7901,
+            0.8272,
+            0.8272,
+            0.8395,
+            0.8395,
+            0.8642,
+            0.8642,
+            0.9259,
+            0.9259,
+            0.9506,
+            0.9506,
+            0.963,
+            0.963,
+            0.9753,
+            0.9753,
+            1.0,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.9837,
+            0.8566,
+            0.8473,
+            0.7958,
+            0.7681,
+            0.7549,
+            0.7537,
+            0.6429,
+            0.6163,
+            0.56,
+            0.548,
+            0.532,
+            0.5305,
+            0.5025,
+            0.4859,
+            0.4807,
+            0.4609,
+            0.4517,
+            0.4489,
+            0.4337,
+            0.4106,
+            0.4018,
+            0.4016,
+            0.3957,
+            0.3927,
+            0.3925,
+            0.3899,
+            0.3814,
+            0.3779,
+            0.3569,
+            0.3544,
+            0.3365,
+            0.3322,
+            0.3232,
+            0.3063,
+            0.2957,
+            0.2899,
+            0.2747,
+            0.1997
+          ]
+        },
+        "support": {
+          "negative": 33,
+          "positive": 81
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.6588,
+          "std": 0.0365
+        },
+        "balanced_accuracy": {
+          "mean": 0.6816,
+          "std": 0.0325
+        },
+        "precision": {
+          "mean": 0.8561,
+          "std": 0.0307
+        },
+        "recall": {
+          "mean": 0.6282,
+          "std": 0.0608
+        },
+        "f1": {
+          "mean": 0.7225,
+          "std": 0.0382
+        },
+        "roc_auc": {
+          "mean": 0.7278,
+          "std": 0.0263
+        }
+      }
+    },
+    "majority_baseline": {
+      "label": "Majority class (baseline)",
+      "params": {},
+      "test": {
+        "accuracy": 0.7105,
+        "balanced_accuracy": 0.5,
+        "precision": 0.7105,
+        "recall": 1.0,
+        "specificity": 0.0,
+        "f1": 0.8308,
+        "roc_auc": 0.5,
+        "confusion_matrix": [
+          [
+            0,
+            33
+          ],
+          [
+            0,
+            81
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.7127
+          ]
+        },
+        "support": {
+          "negative": 33,
+          "positive": 81
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.7123,
+          "std": 0.0035
+        },
+        "balanced_accuracy": {
+          "mean": 0.5,
+          "std": 0.0
+        },
+        "precision": {
+          "mean": 0.7123,
+          "std": 0.0035
+        },
+        "recall": {
+          "mean": 1.0,
+          "std": 0.0
+        },
+        "f1": {
+          "mean": 0.832,
+          "std": 0.0024
+        },
+        "roc_auc": {
+          "mean": 0.5,
+          "std": 0.0
+        }
+      }
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "Direct_Bilirubin",
+      "importance": 0.48
+    },
+    {
+      "feature": "Age",
+      "importance": 0.2372
+    },
+    {
+      "feature": "Alkaline_Phosphotase",
+      "importance": 0.1462
+    },
+    {
+      "feature": "Aspartate_Aminotransferase",
+      "importance": 0.0535
+    },
+    {
+      "feature": "Total_Proteins",
+      "importance": 0.0434
+    },
+    {
+      "feature": "Albumin_and_Globulin_Ratio",
+      "importance": 0.0397
+    },
+    {
+      "feature": "Total_Bilirubin",
+      "importance": 0.0
+    },
+    {
+      "feature": "Alamine_Aminotransferase",
+      "importance": 0.0
+    },
+    {
+      "feature": "Albumin",
+      "importance": 0.0
+    },
+    {
+      "feature": "Gender",
+      "importance": 0.0
+    }
+  ],
+  "risk_bands": {
+    "low": 0.35,
+    "moderate": 0.65,
+    "high": 1.01
+  },
+  "robustness": null
+}

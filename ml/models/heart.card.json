@@ -1,0 +1,771 @@
+{
+  "disease": "heart",
+  "title": "Heart Disease",
+  "version": "1.0.0",
+  "algorithm": "DecisionTreeClassifier",
+  "deployment_rationale": null,
+  "trained_at": "2026-11-09T14:20:20+00:00",
+  "intended_use": "Preliminary clinical decision support and education. Outputs must be reviewed by a qualified healthcare professional and are not a diagnosis.",
+  "limitations": [
+    "Small dataset (303 patients from one US clinic, 1988).",
+    "Several inputs (thallium test, fluoroscopy vessels, exercise ECG) need hospital tests."
+  ],
+  "dataset": {
+    "source": "UCI Heart Disease, Cleveland subset (Janosi et al., 1988)",
+    "raw_rows": 303,
+    "rows": 303,
+    "class_balance": {
+      "No heart disease": 164,
+      "Heart disease": 139
+    },
+    "cleaning": [
+      "Missing values ('?') found: {'ca': 4, 'thal': 2}; imputed inside the pipeline",
+      "Target 'num' (0-4 severity) binarised: 0 = no disease, 1-4 = disease present",
+      "Categorical codes (cp, restecg, slope, thal) one-hot encoded so they are not treated as ordered numbers",
+      "Original 303-row UCI Cleveland file used instead of the 1,025-row Kaggle copy, which contains repeated patients and leaks between train and test"
+    ],
+    "split": {
+      "train": 242,
+      "test": 61,
+      "stratified": true
+    }
+  },
+  "feature_names": [
+    "age",
+    "sex",
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalach",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal"
+  ],
+  "features": [
+    {
+      "name": "age",
+      "label": "Age",
+      "kind": "numeric",
+      "unit": "years",
+      "min": 18,
+      "max": 100,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "sex",
+      "label": "Sex",
+      "kind": "binary",
+      "unit": "",
+      "min": null,
+      "max": null,
+      "choices": {
+        "0": "female",
+        "1": "male"
+      },
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "cp",
+      "label": "Chest pain type",
+      "kind": "categorical",
+      "unit": "",
+      "min": null,
+      "max": null,
+      "choices": {
+        "1": "typical angina",
+        "2": "atypical angina",
+        "3": "non-anginal pain",
+        "4": "asymptomatic"
+      },
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "trestbps",
+      "label": "Resting blood pressure",
+      "kind": "numeric",
+      "unit": "mm Hg",
+      "min": 80,
+      "max": 220,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "chol",
+      "label": "Serum cholesterol",
+      "kind": "numeric",
+      "unit": "mg/dL",
+      "min": 100,
+      "max": 600,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "fbs",
+      "label": "Fasting blood sugar > 120 mg/dL",
+      "kind": "binary",
+      "unit": "",
+      "min": null,
+      "max": null,
+      "choices": {
+        "0": "no",
+        "1": "yes"
+      },
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "restecg",
+      "label": "Resting ECG",
+      "kind": "categorical",
+      "unit": "",
+      "min": null,
+      "max": null,
+      "choices": {
+        "0": "normal",
+        "1": "ST-T wave abnormality",
+        "2": "left ventricular hypertrophy"
+      },
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "thalach",
+      "label": "Maximum heart rate achieved",
+      "kind": "numeric",
+      "unit": "bpm",
+      "min": 60,
+      "max": 220,
+      "choices": {},
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "exang",
+      "label": "Exercise-induced angina",
+      "kind": "binary",
+      "unit": "",
+      "min": null,
+      "max": null,
+      "choices": {
+        "0": "no",
+        "1": "yes"
+      },
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "oldpeak",
+      "label": "ST depression induced by exercise",
+      "kind": "numeric",
+      "unit": "mm",
+      "min": 0,
+      "max": 7,
+      "choices": {},
+      "required": true,
+      "help": "vs rest"
+    },
+    {
+      "name": "slope",
+      "label": "Slope of peak exercise ST segment",
+      "kind": "categorical",
+      "unit": "",
+      "min": null,
+      "max": null,
+      "choices": {
+        "1": "upsloping",
+        "2": "flat",
+        "3": "downsloping"
+      },
+      "required": true,
+      "help": ""
+    },
+    {
+      "name": "ca",
+      "label": "Major vessels coloured by fluoroscopy",
+      "kind": "numeric",
+      "unit": "vessels",
+      "min": 0,
+      "max": 3,
+      "choices": {},
+      "required": false,
+      "help": ""
+    },
+    {
+      "name": "thal",
+      "label": "Thalassemia (thallium stress test)",
+      "kind": "categorical",
+      "unit": "",
+      "min": null,
+      "max": null,
+      "choices": {
+        "3": "normal",
+        "6": "fixed defect",
+        "7": "reversible defect"
+      },
+      "required": false,
+      "help": ""
+    }
+  ],
+  "class_names": [
+    "No heart disease",
+    "Heart disease"
+  ],
+  "hyperparameters": {
+    "ccp_alpha": 0.0,
+    "class_weight": "balanced",
+    "criterion": "gini",
+    "max_depth": 3,
+    "min_samples_leaf": 10
+  },
+  "model_selection": {
+    "search": "GridSearchCV, stratified k-fold",
+    "scoring": "balanced_accuracy",
+    "candidates_evaluated": 336,
+    "refit_rule": "one-standard-error (simplest tree within 1 SE of the best CV score)",
+    "best_cv_score": 0.7886,
+    "selected_cv_score": 0.7886
+  },
+  "tree": {
+    "depth": 3,
+    "leaves": 8.0,
+    "n_trees": 1
+  },
+  "evaluation": {
+    "test": {
+      "accuracy": 0.8689,
+      "balanced_accuracy": 0.868,
+      "precision": 0.8571,
+      "recall": 0.8571,
+      "specificity": 0.8788,
+      "f1": 0.8571,
+      "roc_auc": 0.8712,
+      "confusion_matrix": [
+        [
+          29,
+          4
+        ],
+        [
+          4,
+          24
+        ]
+      ],
+      "roc_curve": {
+        "fpr": [
+          0.0,
+          0.0606,
+          0.1212,
+          0.1212,
+          0.2727,
+          0.3939,
+          0.5455,
+          1.0
+        ],
+        "tpr": [
+          0.0,
+          0.4286,
+          0.5714,
+          0.8571,
+          0.8571,
+          0.9286,
+          0.9643,
+          1.0
+        ],
+        "thresholds": [
+          1.0,
+          0.9848,
+          0.8415,
+          0.6028,
+          0.3863,
+          0.3102,
+          0.2941,
+          0.0517
+        ]
+      },
+      "support": {
+        "negative": 33,
+        "positive": 28
+      }
+    },
+    "nested_cv": {
+      "accuracy": {
+        "mean": 0.7936,
+        "std": 0.0543
+      },
+      "balanced_accuracy": {
+        "mean": 0.789,
+        "std": 0.0576
+      },
+      "precision": {
+        "mean": 0.8005,
+        "std": 0.0614
+      },
+      "recall": {
+        "mean": 0.7331,
+        "std": 0.1026
+      },
+      "f1": {
+        "mean": 0.7621,
+        "std": 0.0713
+      },
+      "roc_auc": {
+        "mean": 0.8314,
+        "std": 0.0452
+      }
+    }
+  },
+  "comparison": {
+    "decision_tree": {
+      "label": "Decision Tree",
+      "params": {
+        "ccp_alpha": 0.0,
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": 3,
+        "min_samples_leaf": 10
+      },
+      "test": {
+        "accuracy": 0.8689,
+        "balanced_accuracy": 0.868,
+        "precision": 0.8571,
+        "recall": 0.8571,
+        "specificity": 0.8788,
+        "f1": 0.8571,
+        "roc_auc": 0.8712,
+        "confusion_matrix": [
+          [
+            29,
+            4
+          ],
+          [
+            4,
+            24
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            0.0606,
+            0.1212,
+            0.1212,
+            0.2727,
+            0.3939,
+            0.5455,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            0.4286,
+            0.5714,
+            0.8571,
+            0.8571,
+            0.9286,
+            0.9643,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.9848,
+            0.8415,
+            0.6028,
+            0.3863,
+            0.3102,
+            0.2941,
+            0.0517
+          ]
+        },
+        "support": {
+          "negative": 33,
+          "positive": 28
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.7936,
+          "std": 0.0543
+        },
+        "balanced_accuracy": {
+          "mean": 0.789,
+          "std": 0.0576
+        },
+        "precision": {
+          "mean": 0.8005,
+          "std": 0.0614
+        },
+        "recall": {
+          "mean": 0.7331,
+          "std": 0.1026
+        },
+        "f1": {
+          "mean": 0.7621,
+          "std": 0.0713
+        },
+        "roc_auc": {
+          "mean": 0.8314,
+          "std": 0.0452
+        }
+      }
+    },
+    "logistic_regression": {
+      "label": "Logistic Regression",
+      "params": {
+        "C": 10.0,
+        "class_weight": null
+      },
+      "test": {
+        "accuracy": 0.8197,
+        "balanced_accuracy": 0.8198,
+        "precision": 0.7931,
+        "recall": 0.8214,
+        "specificity": 0.8182,
+        "f1": 0.807,
+        "roc_auc": 0.9232,
+        "confusion_matrix": [
+          [
+            27,
+            6
+          ],
+          [
+            5,
+            23
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            0.0,
+            0.0,
+            0.0303,
+            0.0303,
+            0.0606,
+            0.0606,
+            0.0909,
+            0.0909,
+            0.1818,
+            0.1818,
+            0.303,
+            0.303,
+            0.3636,
+            0.3636,
+            0.4848,
+            0.4848,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            0.0357,
+            0.25,
+            0.25,
+            0.6786,
+            0.6786,
+            0.7857,
+            0.7857,
+            0.8214,
+            0.8214,
+            0.8929,
+            0.8929,
+            0.9286,
+            0.9286,
+            0.9643,
+            0.9643,
+            1.0,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.9994,
+            0.9875,
+            0.9872,
+            0.818,
+            0.7943,
+            0.7691,
+            0.7357,
+            0.6809,
+            0.5321,
+            0.4357,
+            0.3146,
+            0.2797,
+            0.2207,
+            0.2131,
+            0.1211,
+            0.1162,
+            0.0078
+          ]
+        },
+        "support": {
+          "negative": 33,
+          "positive": 28
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.8333,
+          "std": 0.0337
+        },
+        "balanced_accuracy": {
+          "mean": 0.8311,
+          "std": 0.0347
+        },
+        "precision": {
+          "mean": 0.8325,
+          "std": 0.0548
+        },
+        "recall": {
+          "mean": 0.8021,
+          "std": 0.0664
+        },
+        "f1": {
+          "mean": 0.8145,
+          "std": 0.0394
+        },
+        "roc_auc": {
+          "mean": 0.9088,
+          "std": 0.0325
+        }
+      }
+    },
+    "random_forest": {
+      "label": "Random Forest",
+      "params": {
+        "class_weight": null,
+        "max_depth": null,
+        "min_samples_leaf": 5
+      },
+      "test": {
+        "accuracy": 0.8852,
+        "balanced_accuracy": 0.8885,
+        "precision": 0.8387,
+        "recall": 0.9286,
+        "specificity": 0.8485,
+        "f1": 0.8814,
+        "roc_auc": 0.9567,
+        "confusion_matrix": [
+          [
+            28,
+            5
+          ],
+          [
+            2,
+            26
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            0.0,
+            0.0,
+            0.0303,
+            0.0303,
+            0.0606,
+            0.0606,
+            0.0909,
+            0.0909,
+            0.1818,
+            0.1818,
+            0.3939,
+            0.3939,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            0.0357,
+            0.3929,
+            0.3929,
+            0.7857,
+            0.7857,
+            0.8571,
+            0.8571,
+            0.9286,
+            0.9286,
+            0.9643,
+            0.9643,
+            1.0,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.9748,
+            0.815,
+            0.8104,
+            0.6277,
+            0.6176,
+            0.5919,
+            0.5856,
+            0.554,
+            0.4773,
+            0.4615,
+            0.2908,
+            0.2854,
+            0.054
+          ]
+        },
+        "support": {
+          "negative": 33,
+          "positive": 28
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.8348,
+          "std": 0.0375
+        },
+        "balanced_accuracy": {
+          "mean": 0.8311,
+          "std": 0.0392
+        },
+        "precision": {
+          "mean": 0.8465,
+          "std": 0.0478
+        },
+        "recall": {
+          "mean": 0.7837,
+          "std": 0.0676
+        },
+        "f1": {
+          "mean": 0.8121,
+          "std": 0.0461
+        },
+        "roc_auc": {
+          "mean": 0.9144,
+          "std": 0.0249
+        }
+      }
+    },
+    "majority_baseline": {
+      "label": "Majority class (baseline)",
+      "params": {},
+      "test": {
+        "accuracy": 0.541,
+        "balanced_accuracy": 0.5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "specificity": 1.0,
+        "f1": 0.0,
+        "roc_auc": 0.5,
+        "confusion_matrix": [
+          [
+            33,
+            0
+          ],
+          [
+            28,
+            0
+          ]
+        ],
+        "roc_curve": {
+          "fpr": [
+            0.0,
+            1.0
+          ],
+          "tpr": [
+            0.0,
+            1.0
+          ],
+          "thresholds": [
+            1.0,
+            0.4587
+          ]
+        },
+        "support": {
+          "negative": 33,
+          "positive": 28
+        }
+      },
+      "cv": {
+        "accuracy": {
+          "mean": 0.5413,
+          "std": 0.0053
+        },
+        "balanced_accuracy": {
+          "mean": 0.5,
+          "std": 0.0
+        },
+        "precision": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "recall": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "f1": {
+          "mean": 0.0,
+          "std": 0.0
+        },
+        "roc_auc": {
+          "mean": 0.5,
+          "std": 0.0
+        }
+      }
+    }
+  },
+  "feature_importance": [
+    {
+      "feature": "thal",
+      "importance": 0.5401
+    },
+    {
+      "feature": "cp",
+      "importance": 0.1818
+    },
+    {
+      "feature": "ca",
+      "importance": 0.181
+    },
+    {
+      "feature": "oldpeak",
+      "importance": 0.0573
+    },
+    {
+      "feature": "age",
+      "importance": 0.0397
+    },
+    {
+      "feature": "trestbps",
+      "importance": 0.0
+    },
+    {
+      "feature": "chol",
+      "importance": 0.0
+    },
+    {
+      "feature": "thalach",
+      "importance": 0.0
+    },
+    {
+      "feature": "sex",
+      "importance": 0.0
+    },
+    {
+      "feature": "fbs",
+      "importance": 0.0
+    },
+    {
+      "feature": "exang",
+      "importance": 0.0
+    },
+    {
+      "feature": "restecg",
+      "importance": 0.0
+    },
+    {
+      "feature": "slope",
+      "importance": 0.0
+    }
+  ],
+  "risk_bands": {
+    "low": 0.35,
+    "moderate": 0.65,
+    "high": 1.01
+  },
+  "robustness": null
+}
