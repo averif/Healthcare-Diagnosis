@@ -1,0 +1,22 @@
+@import 'tailwindcss';
+
+/* Design tokens: calm clinical palette (teal primary, slate neutrals) */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --color-brand-50: #effcfa;
+  --color-brand-100: #c8f5ee;
+  --color-brand-500: #14a38b;
+  --color-brand-600: #0d8574;
+  --color-brand-700: #0f6a5e;
+
+  --color-risk-low: #16a34a;
+  --color-risk-moderate: #d97706;
+  --color-risk-high: #dc2626;
+}
+
+@layer base {
+  html {
+    @apply bg-slate-50 text-slate-900 antialiased;
+  }
+}

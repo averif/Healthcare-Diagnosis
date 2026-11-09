@@ -1,0 +1,20 @@
+[project]
+name = "mediassist-backend"
+version = "0.1.0"
+description = "Flask API for the AI-Powered Healthcare Diagnosis and Clinical Decision Support System"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.coverage.run]
+source = ["app"]
