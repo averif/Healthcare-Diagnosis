@@ -5,7 +5,7 @@ import { AuthProvider } from '@/auth/AuthContext'
 import { RequireAuth } from '@/auth/RequireAuth'
 import { AppLayout } from '@/components/layout/AppLayout'
 import { AssessFormPage, AssessIndexPage } from '@/pages/AssessPages'
-import { LoginPage, RegisterPage } from '@/pages/auth/AuthPages'
+import { ApplicationStatusPage, LoginPage, RegisterPage } from '@/pages/auth/AuthPages'
 import { HistoryPage } from '@/pages/HistoryPage'
 import { LandingPage } from '@/pages/LandingPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
@@ -21,6 +21,9 @@ const DashboardPage = lazy(() =>
 )
 const ModelsPage = lazy(() => import('@/pages/ModelsPage').then((m) => ({ default: m.ModelsPage })))
 const UsersPage = lazy(() => import('@/pages/AdminPages').then((m) => ({ default: m.UsersPage })))
+const ApplicationsPage = lazy(() =>
+  import('@/pages/AdminPages').then((m) => ({ default: m.ApplicationsPage })),
+)
 const AuditLogPage = lazy(() =>
   import('@/pages/AdminPages').then((m) => ({ default: m.AuditLogPage })),
 )
@@ -41,6 +44,15 @@ const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/register', element: <RegisterPage /> },
+  {
+    // the only page an unapproved doctor applicant can open
+    path: '/application',
+    element: (
+      <RequireAuth allowApplicant>
+        <ApplicationStatusPage />
+      </RequireAuth>
+    ),
+  },
   {
     element: (
       <RequireAuth>
@@ -65,6 +77,7 @@ const router = createBrowserRouter([
       { path: '/patients/:id', element: only(['doctor', 'admin'], <PatientDetailPage />) },
       { path: '/models', element: only(['doctor', 'admin'], <ModelsPage />) },
       { path: '/admin/users', element: only(['admin'], <UsersPage />) },
+      { path: '/admin/applications', element: only(['admin'], <ApplicationsPage />) },
       { path: '/admin/audit', element: only(['admin'], <AuditLogPage />) },
       { path: '/home', element: <Navigate to="/dashboard" replace /> },
       { path: '*', element: <NotFoundPage /> },

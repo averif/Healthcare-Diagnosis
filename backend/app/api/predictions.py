@@ -37,6 +37,7 @@ from ..security import (
     roles_required,
     visible_patient_ids_query,
 )
+from ..services.assignment import auto_assign
 from ..services.predictor import InputError, prediction_service
 from ..services.reports import build_pdf
 
@@ -105,6 +106,11 @@ def create_prediction(body, disease: str):
     """Run a model and store the explained result (status: pending review)."""
     module = _disease(disease)
     patient = _target_patient(body["patient_id"])
+    if patient.assigned_doctor_id is None:
+        # Fallback for patients who registered while no approved doctor was available
+        doctor = auto_assign(patient)
+        if doctor is not None:
+            audit("patient.auto_assign", "patient", patient.id, doctor_id=doctor.id)
     try:
         prediction = prediction_service().create(module, patient, body["inputs"], current_user)
     except InputError as exc:

@@ -2,6 +2,7 @@
 
 flask seed            demo admin, doctor and patient accounts
 flask seed --demo     ...plus extra patients and ~60 realistic predictions for the dashboards
+flask assign-unassigned   give unassigned patients the least-loaded approved doctor
 """
 
 from __future__ import annotations
@@ -16,7 +17,9 @@ from flask import Flask, current_app
 from .extensions import db
 from .models import (
     Disease,
+    DoctorProfile,
     DoctorReview,
+    DoctorStatus,
     Patient,
     Prediction,
     PredictionStatus,
@@ -55,6 +58,12 @@ SYMPTOM_CASES = [
 ]
 
 
+DEMO_LICENSES = {
+    "doctor@mediassist.test": ("DMC-2014-55821", "Delhi Medical Council", "General Medicine"),
+    "doctor2@mediassist.test": ("MMC-2011-30417", "Maharashtra Medical Council", "Cardiology"),
+}
+
+
 def _get_or_create_user(email: str, name: str, role: Role, password: str) -> User:
     user = db.session.scalar(db.select(User).filter_by(email=email))
     if user is None:
@@ -64,6 +73,25 @@ def _get_or_create_user(email: str, name: str, role: Role, password: str) -> Use
         db.session.flush()
         click.echo(f"created {role.value}: {email}")
     return user
+
+
+def _ensure_approved_profile(user: User) -> None:
+    """Seeded doctors are pre-verified, so they behave like approved self-registrations."""
+    if user.doctor_profile is not None:
+        return
+    license_number, authority, specialty = DEMO_LICENSES[user.email]
+    db.session.add(
+        DoctorProfile(
+            user=user,
+            license_number=license_number,
+            issuing_authority=authority,
+            hospital="MediAssist Demo Hospital",
+            specialty=specialty,
+            status=DoctorStatus.APPROVED,
+            reviewed_at=datetime.now(UTC),
+        )
+    )
+    db.session.flush()
 
 
 def _dataset_inputs(disease: str, rng: random.Random) -> list[dict]:
@@ -145,6 +173,8 @@ def seed_database(demo: bool = False) -> None:
     """Create demo accounts (idempotent); with demo=True also sample patients and predictions."""
     password = os.getenv("DEMO_PASSWORD") or "Demo@12345"
     users = {email: _get_or_create_user(email, n, r, password) for email, n, r in DEMO_USERS}
+    for email in DEMO_LICENSES:
+        _ensure_approved_profile(users[email])
     doctor = users["doctor@mediassist.test"]
     patient_user = users["patient@mediassist.test"]
     if patient_user.patient_profile is None:
@@ -173,3 +203,14 @@ def register_cli(app: Flask) -> None:
         seed_database(demo)
         current_app.logger.info("seed complete")
         click.echo("seed complete")
+
+    @app.cli.command("assign-unassigned")
+    def assign_unassigned_command() -> None:
+        """Give every patient without a doctor the least-loaded approved, active doctor."""
+        from .services.assignment import assign_unassigned
+
+        assigned, left = assign_unassigned()
+        db.session.commit()
+        click.echo(f"assigned {assigned} patient(s); {left} still unassigned")
+        if left:
+            click.echo("no approved, active doctor available for the rest")

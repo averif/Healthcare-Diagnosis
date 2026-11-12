@@ -68,10 +68,10 @@ test.describe('Admin', () => {
     await page.getByRole('link', { name: 'Patients' }).click()
     const select = page.getByLabel('Assigned doctor for Aarav Sharma')
     await select.selectOption({ label: 'Dr. Rahul Mehta' })
-    await expect(select).toHaveValue(/\d+/)
+    // wait for the save to land (the controlled select shows the server value), then reload
+    const selected = select.locator('option:checked')
+    await expect(selected).toHaveText('Dr. Rahul Mehta')
     await page.reload()
-    await expect(page.getByLabel('Assigned doctor for Aarav Sharma')).toHaveValue(
-      await select.inputValue(),
-    )
+    await expect(selected).toHaveText('Dr. Rahul Mehta')
   })
 })

@@ -6,6 +6,20 @@ export type RiskLevel = 'low' | 'moderate' | 'high'
 export type PredictionStatus = 'pending_review' | 'reviewed'
 export type Verdict = 'agree' | 'disagree' | 'inconclusive'
 export type Sex = 'male' | 'female' | 'other'
+export type DoctorStatus = 'pending' | 'approved' | 'rejected'
+
+/** A self-registered doctor's own verification status (see DoctorApplicationStatusSchema). */
+export interface DoctorApplicationStatus {
+  status: DoctorStatus
+  rejection_reason: string | null
+  license_number: string
+  issuing_authority: string
+  hospital: string | null
+  specialty: string | null
+  has_document: boolean
+  submitted_at: string
+  reviewed_at: string | null
+}
 
 export interface User {
   id: number
@@ -16,6 +30,8 @@ export interface User {
   created_at: string
   last_login_at: string | null
   patient_id: number | null
+  /** Present for self-registered doctors; null for everyone else */
+  doctor_application?: DoctorApplicationStatus | null
 }
 
 export interface AuthTokens {
@@ -146,6 +162,32 @@ export interface DashboardSummary {
   recent: Prediction[]
   users_by_role?: Partial<Record<Role, number>>
   unassigned_patients?: number
+}
+
+export interface DoctorApplication {
+  id: number
+  user: { id: number; full_name: string; email: string; is_active: boolean; role: Role }
+  license_number: string
+  issuing_authority: string
+  hospital: string | null
+  specialty: string | null
+  status: DoctorStatus
+  rejection_reason: string | null
+  has_document: boolean
+  reviewed_by: DoctorBrief | null
+  reviewed_at: string | null
+  created_at: string
+}
+
+export interface RegisterPayload {
+  full_name: string
+  email: string
+  password: string
+  account_type: 'patient' | 'doctor'
+  license_number?: string
+  issuing_authority?: string
+  hospital?: string | null
+  specialty?: string | null
 }
 
 export interface AuditLog {

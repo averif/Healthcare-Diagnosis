@@ -23,7 +23,10 @@ DIABETES_INPUTS = {
 
 @pytest.fixture
 def app(tmp_path):
-    app = create_app("testing", {"REPORTS_DIR": tmp_path / "reports"})
+    app = create_app(
+        "testing",
+        {"REPORTS_DIR": tmp_path / "reports", "DOCTOR_DOCS_DIR": tmp_path / "doctor_docs"},
+    )
     with app.app_context():
         _db.create_all()
         yield app

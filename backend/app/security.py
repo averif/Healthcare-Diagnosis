@@ -64,8 +64,12 @@ def revoke(payload: dict) -> None:
     )
 
 
-def roles_required(*roles: Role) -> Callable:
-    """Require a valid access token and one of the given roles (any role if none given)."""
+def roles_required(*roles: Role, allow_applicants: bool = False) -> Callable:
+    """Require a valid access token and one of the given roles (any role if none given).
+
+    Doctor applicants (pending or rejected verification) are refused everywhere unless
+    allow_applicants=True, so an unapproved sign-up can only see its own account status.
+    """
 
     def decorator(fn: Callable) -> Callable:
         @wraps(fn)
@@ -73,6 +77,8 @@ def roles_required(*roles: Role) -> Callable:
             verify_jwt_in_request()
             if roles and current_user.role not in roles:
                 abort(403, message="You do not have permission to perform this action.")
+            if current_user.is_doctor_applicant and not allow_applicants:
+                abort(403, message="Your doctor account has not been approved by an administrator.")
             return fn(*args, **kwargs)
 
         return wrapper
@@ -81,6 +87,8 @@ def roles_required(*roles: Role) -> Callable:
 
 
 login_required = roles_required()
+#: Any signed-in account, including doctor applicants awaiting verification
+account_required = roles_required(allow_applicants=True)
 
 #: Attach to flask-smorest docs so Swagger shows the padlock on protected endpoints
 BEARER = [{"bearerAuth": []}]

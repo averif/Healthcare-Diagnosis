@@ -1,9 +1,11 @@
 """Database models. Importing this package registers every table with SQLAlchemy."""
 
 from .audit import AuditLog, ChatMessage
+from .doctor_profile import DoctorProfile
 from .enums import (
     ChatRole,
     Disease,
+    DoctorStatus,
     PredictionStatus,
     ReviewVerdict,
     RiskLevel,
@@ -23,7 +25,9 @@ __all__ = [
     "ChatMessage",
     "ChatRole",
     "Disease",
+    "DoctorProfile",
     "DoctorReview",
+    "DoctorStatus",
     "ModelVersion",
     "Patient",
     "Prediction",

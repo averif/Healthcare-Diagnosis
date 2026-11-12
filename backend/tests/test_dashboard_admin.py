@@ -4,11 +4,12 @@ from .conftest import auth
 
 
 def test_dashboard_summary_is_scoped(
-    client, patient, other_patient, doctor, admin, make_prediction
+    client, patient, other_patient, doctor, other_doctor, admin, make_prediction
 ):
     make_prediction(patient)
     make_prediction(patient, "symptom", {"symptoms": ["chest_pain", "breathlessness"]})
-    make_prediction(other_patient)
+    make_prediction(other_patient)  # first prediction auto-assigns the least-loaded doctor
+    assert other_patient.patient_profile.assigned_doctor_id == other_doctor.id
 
     doc = client.get("/api/dashboard/summary", headers=auth(doctor)).get_json()
     assert doc["totals"] == {"patients": 1, "predictions": 2, "pending_reviews": 2, "high_risk": 2}
@@ -19,8 +20,8 @@ def test_dashboard_summary_is_scoped(
 
     adm = client.get("/api/dashboard/summary", headers=auth(admin)).get_json()
     assert adm["totals"]["predictions"] == 3
-    assert adm["users_by_role"] == {"admin": 1, "doctor": 1, "patient": 2}
-    assert adm["unassigned_patients"] == 1
+    assert adm["users_by_role"] == {"admin": 1, "doctor": 2, "patient": 2}
+    assert adm["unassigned_patients"] == 0
 
     own = client.get("/api/dashboard/summary", headers=auth(other_patient)).get_json()
     assert own["totals"]["predictions"] == 1

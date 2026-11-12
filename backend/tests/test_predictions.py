@@ -100,12 +100,12 @@ def test_admin_cannot_run_predictions(client, admin):
 
 
 def test_history_is_scoped_filtered_and_paginated(
-    client, patient, other_patient, doctor, make_prediction
+    client, patient, other_patient, doctor, other_doctor, make_prediction
 ):
     for _ in range(3):
         make_prediction(patient)
     make_prediction(patient, "symptom", {"symptoms": ["itching", "skin_rash"]})
-    make_prediction(other_patient)
+    make_prediction(other_patient)  # auto-assigned to the least-loaded doctor (other_doctor)
 
     own = client.get("/api/predictions?page_size=2", headers=auth(patient)).get_json()
     assert own["total"] == 4 and own["pages"] == 2 and len(own["items"]) == 2

@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { api, setSessionExpiredHandler, tokenStore } from '@/lib/api'
-import type { AuthTokens, User } from '@/types/api'
+import type { AuthTokens, RegisterPayload, User } from '@/types/api'
 import { AuthContext } from './context'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -46,12 +46,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const register = useCallback(
-    async (full_name: string, email: string, password: string) =>
-      startSession(
-        (await api.post<AuthTokens>('/auth/register', { full_name, email, password })).data,
-      ),
+    async (payload: RegisterPayload) =>
+      startSession((await api.post<AuthTokens>('/auth/register', payload)).data),
     [startSession],
   )
+
+  const refreshUser = useCallback(async () => {
+    const { data } = await api.get<User>('/auth/me')
+    setUser(data)
+    return data
+  }, [])
 
   const logout = useCallback(async () => {
     const refresh = tokenStore.refresh
@@ -70,8 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [queryClient])
 
   const value = useMemo(
-    () => ({ user, loading, signedOut, login, register, logout }),
-    [user, loading, signedOut, login, register, logout],
+    () => ({ user, loading, signedOut, login, register, refreshUser, logout }),
+    [user, loading, signedOut, login, register, refreshUser, logout],
   )
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

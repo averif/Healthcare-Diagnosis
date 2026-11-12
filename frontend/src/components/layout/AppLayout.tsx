@@ -1,4 +1,5 @@
 import {
+  BadgeCheck,
   BarChart3,
   ClipboardList,
   History,
@@ -72,6 +73,7 @@ const NAV: Record<Role, { section: string; items: NavItem[] }[]> = {
       section: 'Administration',
       items: [
         { to: '/admin/users', label: 'Users', icon: UserCog },
+        { to: '/admin/applications', label: 'Applications', icon: BadgeCheck },
         { to: '/patients', label: 'Patients', icon: Users },
         { to: '/admin/audit', label: 'Audit log', icon: ScrollText },
       ],

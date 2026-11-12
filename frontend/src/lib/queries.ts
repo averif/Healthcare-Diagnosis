@@ -6,6 +6,8 @@ import type {
   ChatReply,
   DashboardSummary,
   Disease,
+  DoctorApplication,
+  DoctorStatus,
   ModelCard,
   Page,
   Patient,
@@ -253,3 +255,66 @@ export const useAuditLogs = (filters: { action?: string; page?: number }) =>
       (await api.get<Page<AuditLog>>('/admin/audit-logs', { params: params(filters) })).data,
     placeholderData: keepPreviousData,
   })
+
+// ---- doctor verification ------------------------------------------------------------------
+
+/** Attach proof of registration to the signed-in applicant's pending application. */
+export async function uploadDoctorDocument(file: File) {
+  const body = new FormData()
+  body.append('document', file)
+  return (
+    await api.post<User>('/auth/doctor-application/document', body, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  ).data
+}
+
+export const useDoctorApplications = (filters: {
+  status?: DoctorStatus | ''
+  page?: number
+  page_size?: number
+}) =>
+  useQuery({
+    queryKey: ['doctor-applications', filters],
+    queryFn: async () =>
+      (
+        await api.get<Page<DoctorApplication>>('/admin/doctor-applications', {
+          params: params(filters),
+        })
+      ).data,
+    placeholderData: keepPreviousData,
+  })
+
+function useApplicationDecision<T>(request: (vars: T) => Promise<{ data: DoctorApplication }>) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (vars: T) => (await request(vars)).data,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['doctor-applications'] })
+      qc.invalidateQueries({ queryKey: ['users'] })
+      qc.invalidateQueries({ queryKey: ['dashboard'] })
+    },
+  })
+}
+
+export const useApproveApplication = () =>
+  useApplicationDecision((id: number) =>
+    api.post<DoctorApplication>(`/admin/doctor-applications/${id}/approve`),
+  )
+
+export const useRejectApplication = () =>
+  useApplicationDecision(({ id, reason }: { id: number; reason: string }) =>
+    api.post<DoctorApplication>(`/admin/doctor-applications/${id}/reject`, { reason }),
+  )
+
+/** Open an applicant's document in a new tab (falls back to a download if pop-ups are blocked). */
+export async function openDoctorDocument(id: number) {
+  const response = await api.get<Blob>(`/admin/doctor-applications/${id}/document`, {
+    responseType: 'blob',
+  })
+  const disposition = String(response.headers['content-disposition'] ?? '')
+  const filename = /filename="?([^";]+)"?/.exec(disposition)?.[1] ?? `doctor-application-${id}`
+  const url = URL.createObjectURL(response.data)
+  if (!window.open(url, '_blank')) saveBlob(response.data, filename)
+  setTimeout(() => URL.revokeObjectURL(url), 60_000)
+}

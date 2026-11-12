@@ -25,6 +25,11 @@ class Config:
     # Trained models live in /ml/models (produced by the ML pipeline in Phase 2)
     MODELS_DIR = Path(os.getenv("MODELS_DIR", str(PROJECT_ROOT / "ml" / "models")))
     REPORTS_DIR = Path(os.getenv("REPORTS_DIR", str(BASE_DIR / "generated_reports")))
+    # Doctor proof-of-registration uploads. Never under a public/static path. On Render the
+    # disk is ephemeral: point this at a mounted persistent disk or uploads vanish on redeploy.
+    DOCTOR_DOCS_DIR = Path(
+        os.getenv("DOCTOR_DOCS_DIR", str(BASE_DIR / "instance" / "doctor_documents"))
+    )
 
     # AI clinical assistant: "auto" uses NVIDIA when NVIDIA_API_KEY is set, else Claude when
     # ANTHROPIC_API_KEY is set, else offline rules. Force with "nvidia", "claude" or "rules".

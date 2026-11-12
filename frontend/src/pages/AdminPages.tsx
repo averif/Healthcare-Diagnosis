@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus, ScrollText, Search } from 'lucide-react'
+import { BadgeCheck, Check, FileText, Plus, ScrollText, Search, X } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -7,13 +7,22 @@ import { useAuth } from '@/auth/useAuth'
 import { Button } from '@/components/ui/Button'
 import { Card, PageHeader } from '@/components/ui/Card'
 import { Alert, Badge, EmptyState, FullPageSpinner } from '@/components/ui/Feedback'
-import { Field, Input, Select } from '@/components/ui/Form'
-import { Modal } from '@/components/ui/Overlay'
+import { Field, Input, Select, Textarea } from '@/components/ui/Form'
+import { Modal, Tabs } from '@/components/ui/Overlay'
 import { Pagination, Table, Td, Th } from '@/components/ui/Table'
 import { errorMessage, fieldErrors } from '@/lib/api'
-import { useAuditLogs, useCreateUser, useUpdateUser, useUsers } from '@/lib/queries'
+import {
+  openDoctorDocument,
+  useApproveApplication,
+  useAuditLogs,
+  useCreateUser,
+  useDoctorApplications,
+  useRejectApplication,
+  useUpdateUser,
+  useUsers,
+} from '@/lib/queries'
 import { fmtDate, titleCase } from '@/lib/utils'
-import type { Role, User } from '@/types/api'
+import type { DoctorApplication, DoctorStatus, Role, User } from '@/types/api'
 
 const ROLES: Role[] = ['patient', 'doctor', 'admin']
 const ROLE_STYLE: Record<Role, string> = {
@@ -332,6 +341,226 @@ export function AuditLogPage() {
           <EmptyState icon={<ScrollText className="size-10" />} title="No matching events" />
         )}
       </Card>
+    </>
+  )
+}
+
+// ---- doctor applications ------------------------------------------------------------------
+
+const APPLICATION_STATUS: { value: DoctorStatus | ''; label: string }[] = [
+  { value: 'pending', label: 'Pending' },
+  { value: 'approved', label: 'Approved' },
+  { value: 'rejected', label: 'Rejected' },
+  { value: '', label: 'All' },
+]
+const STATUS_STYLE: Record<DoctorStatus, string> = {
+  pending: 'bg-amber-50 text-amber-700',
+  approved: 'bg-emerald-50 text-emerald-700',
+  rejected: 'bg-red-50 text-red-700',
+}
+
+const rejectSchema = z.object({
+  reason: z
+    .string()
+    .trim()
+    .min(5, 'Give the applicant a reason (at least 5 characters).')
+    .max(500, 'Use at most 500 characters.'),
+})
+type RejectValues = z.infer<typeof rejectSchema>
+
+function RejectModal({
+  application,
+  onClose,
+}: {
+  application: DoctorApplication | null
+  onClose: () => void
+}) {
+  const reject = useRejectApplication()
+  const { register, handleSubmit, reset, formState } = useForm<RejectValues>({
+    resolver: zodResolver(rejectSchema),
+  })
+  const close = () => {
+    reset({ reason: '' })
+    reject.reset()
+    onClose()
+  }
+  const onSubmit = handleSubmit(({ reason }) => {
+    if (!application) return
+    reject.mutate({ id: application.id, reason }, { onSuccess: close })
+  })
+  return (
+    <Modal open={!!application} onClose={close} title="Reject application">
+      <form onSubmit={onSubmit} className="space-y-4" noValidate>
+        {reject.error && <Alert tone="error">{errorMessage(reject.error)}</Alert>}
+        <p className="text-sm text-zinc-600">
+          {application?.user.full_name} will see this reason when they sign in.
+        </p>
+        <Field id="reject-reason" label="Reason" required error={formState.errors.reason?.message}>
+          <Textarea
+            id="reject-reason"
+            maxLength={500}
+            aria-invalid={!!formState.errors.reason}
+            {...register('reason')}
+          />
+        </Field>
+        <div className="flex justify-end gap-2 pt-2">
+          <Button type="button" variant="secondary" onClick={close}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="danger" loading={reject.isPending}>
+            Reject
+          </Button>
+        </div>
+      </form>
+    </Modal>
+  )
+}
+
+function ApplicationRow({
+  application,
+  onReject,
+}: {
+  application: DoctorApplication
+  onReject: (application: DoctorApplication) => void
+}) {
+  const approve = useApproveApplication()
+  const [docError, setDocError] = useState<string | null>(null)
+  const name = application.user.full_name
+  return (
+    <tr className="hover:bg-zinc-50">
+      <Td>
+        <p className="font-medium text-zinc-800">{name}</p>
+        <p className="text-xs text-zinc-500">{application.user.email}</p>
+      </Td>
+      <Td>
+        <p className="font-mono text-[13px] text-zinc-800">{application.license_number}</p>
+        <p className="text-xs text-zinc-500">{application.issuing_authority}</p>
+      </Td>
+      <Td>
+        <p className="text-zinc-700">{application.hospital ?? '—'}</p>
+        {application.specialty && <p className="text-xs text-zinc-500">{application.specialty}</p>}
+      </Td>
+      <Td className="whitespace-nowrap text-zinc-500">{fmtDate(application.created_at)}</Td>
+      <Td>
+        {application.has_document ? (
+          <button
+            type="button"
+            className="inline-flex cursor-pointer items-center gap-1 text-[13px] font-medium text-brand-700 hover:underline"
+            onClick={() =>
+              openDoctorDocument(application.id).catch((err) => setDocError(errorMessage(err)))
+            }
+          >
+            <FileText className="size-3.5" aria-hidden /> View document
+          </button>
+        ) : (
+          <span className="text-xs text-zinc-400">None</span>
+        )}
+        {docError && <p className="mt-1 text-xs text-red-600">{docError}</p>}
+      </Td>
+      <Td className="text-right">
+        {application.status === 'pending' ? (
+          <div className="flex justify-end gap-2">
+            <Button
+              size="sm"
+              aria-label={`Approve ${name}`}
+              loading={approve.isPending}
+              onClick={() => approve.mutate(application.id)}
+            >
+              <Check className="size-4" aria-hidden /> Approve
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              aria-label={`Reject ${name}`}
+              disabled={approve.isPending}
+              onClick={() => onReject(application)}
+            >
+              <X className="size-4" aria-hidden /> Reject
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-1">
+            <Badge className={STATUS_STYLE[application.status]}>
+              {titleCase(application.status)}
+            </Badge>
+            {application.rejection_reason && (
+              <p className="ml-auto max-w-56 text-xs text-zinc-500">
+                {application.rejection_reason}
+              </p>
+            )}
+          </div>
+        )}
+        {approve.error && (
+          <p className="mt-1 text-xs text-red-600">{errorMessage(approve.error)}</p>
+        )}
+      </Td>
+    </tr>
+  )
+}
+
+export function ApplicationsPage() {
+  const [status, setStatus] = useState<DoctorStatus | ''>('pending')
+  const [page, setPage] = useState(1)
+  const [rejecting, setRejecting] = useState<DoctorApplication | null>(null)
+  const { data, isPending, error } = useDoctorApplications({ status, page, page_size: 15 })
+
+  return (
+    <>
+      <PageHeader
+        title="Doctor applications"
+        description="Verify each licence with the issuing authority before approving access."
+      />
+      <Card>
+        <div className="border-b border-zinc-100 p-4">
+          <Tabs
+            tabs={APPLICATION_STATUS}
+            value={status}
+            onChange={(value) => {
+              setStatus(value)
+              setPage(1)
+            }}
+          />
+        </div>
+        {isPending ? (
+          <FullPageSpinner />
+        ) : error ? (
+          <Alert tone="error" className="m-4">
+            {errorMessage(error)}
+          </Alert>
+        ) : data.items.length ? (
+          <>
+            <Table>
+              <thead>
+                <tr>
+                  <Th>Applicant</Th>
+                  <Th>Licence</Th>
+                  <Th>Hospital</Th>
+                  <Th>Submitted</Th>
+                  <Th>Document</Th>
+                  <Th>
+                    <span className="sr-only">Decision</span>
+                  </Th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.items.map((application) => (
+                  <ApplicationRow
+                    key={application.id}
+                    application={application}
+                    onReject={setRejecting}
+                  />
+                ))}
+              </tbody>
+            </Table>
+            <Pagination page={data.page} pages={data.pages} total={data.total} onChange={setPage} />
+          </>
+        ) : (
+          <EmptyState icon={<BadgeCheck className="size-10" />} title="No applications">
+            {status === 'pending' ? 'New doctor sign-ups will appear here.' : null}
+          </EmptyState>
+        )}
+      </Card>
+      <RejectModal application={rejecting} onClose={() => setRejecting(null)} />
     </>
   )
 }

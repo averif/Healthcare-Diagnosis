@@ -10,9 +10,10 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from ..extensions import db
 from .base import TimestampMixin, enum_column
-from .enums import Role
+from .enums import DoctorStatus, Role
 
 if TYPE_CHECKING:
+    from .doctor_profile import DoctorProfile
     from .patient import Patient
 
 _hasher = PasswordHasher()
@@ -35,6 +36,17 @@ class User(TimestampMixin, db.Model):
     patient_profile: Mapped[Patient | None] = relationship(
         back_populates="user", foreign_keys="Patient.user_id", uselist=False
     )
+    # A self-registered doctor's verification record (none for admin-created accounts)
+    doctor_profile: Mapped[DoctorProfile | None] = relationship(
+        back_populates="user", foreign_keys="DoctorProfile.user_id", uselist=False
+    )
+
+    @property
+    def is_doctor_applicant(self) -> bool:
+        """A doctor sign-up that an admin has not (yet) approved: no clinical access at all."""
+        return (
+            self.doctor_profile is not None and self.doctor_profile.status != DoctorStatus.APPROVED
+        )
 
     def set_password(self, password: str) -> None:
         self.password_hash = _hasher.hash(password)

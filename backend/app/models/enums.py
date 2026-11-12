@@ -42,3 +42,11 @@ class ReviewVerdict(StrEnum):
 class ChatRole(StrEnum):
     USER = "user"
     ASSISTANT = "assistant"
+
+
+class DoctorStatus(StrEnum):
+    """Manual verification state of a self-registered doctor."""
+
+    PENDING = "pending"
+    APPROVED = "approved"
+    REJECTED = "rejected"
